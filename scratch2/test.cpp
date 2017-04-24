@@ -4,6 +4,7 @@
 
 #include "s2string.h"
 #include "s2list.h"
+#include "s2dict.h"
 #include "s2file.h"
 
 #include "s2test.h"
@@ -105,6 +106,14 @@ int main()
 		arr[2] = 50;
 		S2_TEST(arr[2] == 50);
 
+		s2::list<int> arr2(arr);
+		S2_TEST(arr2.len() == 3);
+		S2_TEST(&arr[0] != &arr2[0]);
+		S2_TEST(arr[0] == arr2[0]);
+		arr2.clear();
+		S2_TEST(arr2.len() == 0);
+		S2_TEST(arr[1] == 20);
+
 		arr.clear();
 		S2_TEST(arr.len() == 0);
 
@@ -112,6 +121,12 @@ int main()
 		Foo &f = foo_arr.add();
 		f.num = 10;
 		S2_TEST(_numFooInstances == 1);
+
+		s2::list<Foo> foo_arr2(foo_arr);
+		S2_TEST(_numFooInstances == 2);
+		foo_arr2.clear();
+		S2_TEST(_numFooInstances == 1);
+
 		foo_arr.remove(0);
 		S2_TEST(_numFooInstances == 0);
 
@@ -127,6 +142,42 @@ int main()
 		foo_arr.clear();
 		S2_TEST(_numFooInstances == 1);
 		S2_TEST(foo_arr.begin() == foo_arr.end());
+	}
+
+	S2_TEST(_numFooInstances == 0);
+#endif
+
+#ifdef S2_USING_DICT
+	s2::test_group("dict");
+	{
+		s2::dict<s2::string, s2::string> dict;
+		dict["foo"] = "FOO";
+		dict["bar"] = "BAR";
+		S2_TEST(dict.len() == 2);
+		S2_TEST(dict["foo"] == "FOO");
+		S2_TEST(dict["bar"] == "BAR");
+		for (auto &pair : dict) {
+			pair.value() = "FUBAR";
+		}
+		S2_TEST(dict["foo"] == "FUBAR");
+		S2_TEST(dict["bar"] == "FUBAR");
+		dict.remove("foo");
+		S2_TEST(dict.index_of("bar") == 0);
+		dict.clear();
+		S2_TEST(dict.len() == 0);
+
+		s2::dict<uint32_t, Foo> dict_foo;
+		S2_TEST(_numFooInstances == 0);
+		dict_foo.add(10).value().num = 20;
+		S2_TEST(_numFooInstances == 1);
+		dict_foo.add(20).value().num = 40;
+		S2_TEST(_numFooInstances == 2);
+		S2_TEST(dict_foo[10].num == 20);
+		S2_TEST(dict_foo[20].num == 40);
+		dict_foo.remove_at(0);
+		S2_TEST(_numFooInstances == 1);
+		dict_foo.clear();
+		S2_TEST(_numFooInstances == 0);
 	}
 #endif
 
@@ -188,6 +239,7 @@ int main()
 		file.close();
 		S2_TEST(file.get_mode() == s2::filemode::none);
 	}
+	S2_TEST(_numBarInstances == 0);
 #endif
 
 	s2::test_end();

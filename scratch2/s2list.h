@@ -11,30 +11,33 @@ namespace s2
 	class list;
 
 	template<typename T>
-	class iterator
+	class listiterator
 	{
 	private:
-		list<T>* m_list;
+		typedef list<T> list;
+
+	private:
+		list* m_list;
 		int m_index;
 
 	public:
-		iterator(list<T>* list, int index)
+		listiterator(list* list, int index)
 		{
 			m_list = list;
 			m_index = index;
 		}
 
-		bool operator ==(iterator<T> &other)
+		bool operator ==(listiterator &other)
 		{
 			return !operator !=(other);
 		}
 
-		bool operator !=(iterator<T> &other)
+		bool operator !=(listiterator &other)
 		{
 			return m_list != other.m_list || m_index != other.m_index;
 		}
 
-		iterator<T> &operator ++()
+		listiterator &operator ++()
 		{
 			m_index++;
 			return *this;
@@ -49,13 +52,13 @@ namespace s2
 	template<typename T>
 	class list
 	{
+	public:
+		typedef listiterator<T> iterator;
+
 	private:
 		T* m_buffer;
 		size_t m_length;
 		size_t m_allocSize;
-
-	public:
-		typedef iterator<T> iterator;
 
 	public:
 		list()
@@ -63,6 +66,14 @@ namespace s2
 			m_buffer = nullptr;
 			m_length = 0;
 			m_allocSize = 0;
+		}
+
+		list(const list &copy)
+		{
+			size_t copylen = copy.len();
+			for (size_t i = 0; i < copylen; i++) {
+				add(copy[i]);
+			}
 		}
 
 		~list()
@@ -81,7 +92,7 @@ namespace s2
 			m_length = 0;
 		}
 
-		size_t len()
+		size_t len() const
 		{
 			return m_length;
 		}
@@ -125,7 +136,17 @@ namespace s2
 			return iterator(this, 0);
 		}
 
+		const iterator begin() const
+		{
+			return iterator(this, 0);
+		}
+
 		iterator end()
+		{
+			return iterator(this, m_length);
+		}
+
+		const iterator end() const
 		{
 			return iterator(this, m_length);
 		}

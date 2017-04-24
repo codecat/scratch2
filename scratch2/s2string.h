@@ -60,6 +60,7 @@ namespace s2
 s2::string::string()
 {
 	m_length = 0;
+	m_buffer = nullptr;
 	resize_memory(1);
 	m_buffer[0] = '\0';
 }
@@ -77,6 +78,7 @@ s2::string::string(const char* sz, size_t len)
 s2::string::string(const char* sz, size_t start, size_t len)
 {
 	m_length = len;
+	m_buffer = nullptr;
 	resize_memory(len + 1);
 	memcpy(m_buffer + start, sz, len);
 	m_buffer[len] = '\0';
