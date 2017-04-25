@@ -6,6 +6,7 @@
 #include "s2list.h"
 #include "s2dict.h"
 #include "s2file.h"
+#include "s2ref.h"
 
 #include "s2test.h"
 
@@ -150,6 +151,7 @@ int main()
 #ifdef S2_USING_DICT
 	s2::test_group("dict");
 	{
+#ifdef S2_USING_STRING
 		s2::dict<s2::string, s2::string> dict;
 		dict["foo"] = "FOO";
 		dict["bar"] = "BAR";
@@ -165,6 +167,9 @@ int main()
 		S2_TEST(dict.index_of("bar") == 0);
 		dict.clear();
 		S2_TEST(dict.len() == 0);
+#else
+		S2_TEST(false && "s2::string is not used, we can't run all s2::dict tests");
+#endif
 
 		s2::dict<uint32_t, Foo> dict_foo;
 		S2_TEST(_numFooInstances == 0);
@@ -179,6 +184,7 @@ int main()
 		dict_foo.clear();
 		S2_TEST(_numFooInstances == 0);
 	}
+	S2_TEST(_numFooInstances == 0);
 #endif
 
 #ifdef S2_USING_FILE
@@ -240,6 +246,35 @@ int main()
 		S2_TEST(file.get_mode() == s2::filemode::none);
 	}
 	S2_TEST(_numBarInstances == 0);
+#endif
+
+#ifdef S2_USING_REF
+	s2::test_group("ref");
+	{
+		S2_TEST(_numFooInstances == 0);
+		{
+			s2::ref<Foo> ref;
+			S2_TEST(_numFooInstances == 0);
+			ref = new Foo;
+			S2_TEST(ref->num == 0);
+			S2_TEST(_numFooInstances == 1);
+			S2_TEST(ref.count() == 1);
+			{
+				s2::ref<Foo> ref2 = ref;
+				S2_TEST(ref.count() == 2);
+				S2_TEST(ref2.count() == 2);
+				S2_TEST(ref.ptr() == ref2.ptr());
+				S2_TEST(_numFooInstances == 1);
+				ref2 = nullptr;
+				S2_TEST(ref.count() == 1);
+				S2_TEST(ref2.ptr() == nullptr);
+				S2_TEST(ref2.count() == 0);
+			}
+			S2_TEST(ref.count() == 1);
+			S2_TEST(_numFooInstances == 1);
+		}
+		S2_TEST(_numFooInstances == 0);
+	}
 #endif
 
 	s2::test_end();

@@ -115,6 +115,7 @@
     <ClInclude Include="s2dict.h" />
     <ClInclude Include="s2file.h" />
     <ClInclude Include="s2list.h" />
+    <ClInclude Include="s2ref.h" />
     <ClInclude Include="s2string.h" />
     <ClInclude Include="s2test.h" />
   </ItemGroup>
