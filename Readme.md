@@ -3,14 +3,14 @@
 Scratch2 is a collection of minimal single-header libraries that implement base functionality. All header files can be included invidiually, the headers do not depend on each other.
 
 * Absolute core:
-  * `s2string.h`
-  * `s2list.h`
-  * `s2dict.h`
-  * `s2ref.h`
+  * [`s2string.h`](#s2stringh)
+  * [`s2list.h`](#s2listh)
+  * [`s2dict.h`](#s2dicth)
+  * [`s2ref.h`](#s2refh)
 * System utility:
-  * `s2file.h`
+  * [`s2file.h`](#s2fileh)
 * Miscellaneous:
-  * `s2test.h`
+  * [`s2test.h`](#s2testh)
 
 To use any of these, you need to define `S2_IMPL` in *one* implementation file and include the files you need there. Note that this does not apply to some files where there is a generic implementation and therefore must be used purely as a header, for example `s2list.h`.
 
