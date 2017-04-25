@@ -112,7 +112,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="s2.h" />
     <ClInclude Include="s2dict.h" />
     <ClInclude Include="s2file.h" />
     <ClInclude Include="s2list.h" />

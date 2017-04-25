@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="s2.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="s2string.h">
       <Filter>Source Files</Filter>
     </ClInclude>
