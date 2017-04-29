@@ -69,25 +69,25 @@ namespace s2
 	class dictiterator
 	{
 	private:
-		typedef dict<TKey, TValue> dict;
+		typedef dict<TKey, TValue> dict_type;
 
 	private:
-		dict* m_dict;
+		dict_type* m_dict;
 		int m_index;
 
 	public:
-		dictiterator(dict* list, int index)
+		dictiterator(dict_type* list, int index)
 		{
 			m_dict = list;
 			m_index = index;
 		}
 
-		bool operator ==(dictiterator &other)
+		bool operator ==(const dictiterator &other)
 		{
 			return !operator !=(other);
 		}
 
-		bool operator !=(dictiterator &other)
+		bool operator !=(const dictiterator &other)
 		{
 			return m_dict != other.m_dict || m_index != other.m_index;
 		}

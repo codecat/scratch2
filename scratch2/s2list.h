@@ -14,25 +14,25 @@ namespace s2
 	class listiterator
 	{
 	private:
-		typedef list<T> list;
+		typedef list<T> list_type;
 
 	private:
-		list* m_list;
+		list_type* m_list;
 		int m_index;
 
 	public:
-		listiterator(list* list, int index)
+		listiterator(list_type* list, int index)
 		{
 			m_list = list;
 			m_index = index;
 		}
 
-		bool operator ==(listiterator &other)
+		bool operator ==(const listiterator &other)
 		{
 			return !operator !=(other);
 		}
 
-		bool operator !=(listiterator &other)
+		bool operator !=(const listiterator &other)
 		{
 			return m_list != other.m_list || m_index != other.m_index;
 		}
@@ -69,6 +69,7 @@ namespace s2
 		}
 
 		list(const list &copy)
+			: list()
 		{
 			size_t copylen = copy.len();
 			for (size_t i = 0; i < copylen; i++) {

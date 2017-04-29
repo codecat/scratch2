@@ -279,6 +279,5 @@ int main()
 
 	s2::test_end();
 
-	getchar();
 	return s2::test_retval();
 }

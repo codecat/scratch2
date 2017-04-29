@@ -2,6 +2,8 @@
 
 #define S2_USING_STRING
 
+#include <cstddef>
+
 namespace s2
 {
 	class string
