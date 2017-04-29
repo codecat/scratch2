@@ -3,6 +3,7 @@
 #define S2_USING_DICT
 
 #include <cstdlib>
+#include <cstring>
 #include <new>
 
 namespace s2
