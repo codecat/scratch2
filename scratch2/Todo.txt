@@ -1,3 +1,0 @@
-Todo:
-* Ability to replace standard lib functions such as `malloc`, `printf`, and `fopen` with custom functions
-* Consider string using stack memory for short strings

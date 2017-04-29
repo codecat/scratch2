@@ -153,3 +153,8 @@ int main()
 ```
 
 Tests can also be grouped by simply calling `s2::test_group(const char* group)` before each group of `S2_TEST()` macros.
+
+# Todo
+
+* Ability to replace standard lib functions such as `malloc`, `printf`, and `fopen` with custom functions
+* Consider string using stack memory for short strings
