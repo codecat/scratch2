@@ -2,6 +2,8 @@
 
 #define S2_USING_FILE
 
+#include <cstddef>
+
 namespace s2
 {
 	enum class filemode
