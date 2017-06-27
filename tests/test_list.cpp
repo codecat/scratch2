@@ -57,4 +57,22 @@ void test_list()
 	}
 
 	S2_TEST(_numFooInstances == 0);
+
+	s2::list<int> rem_arr;
+	rem_arr.add(0);
+	rem_arr.add(1);
+	rem_arr.add(2);
+	rem_arr.add(3);
+	rem_arr.add(4);
+	S2_TEST(rem_arr[0] == 0);
+	S2_TEST(rem_arr.len() == 5);
+	rem_arr.remove(0);
+	S2_TEST(rem_arr[0] == 1);
+	S2_TEST(rem_arr.len() == 4);
+	rem_arr.remove(2);
+	S2_TEST(rem_arr[2] == 4);
+	S2_TEST(rem_arr[0] == 1);
+	rem_arr.remove(2);
+	S2_TEST(rem_arr.len() == 2);
+	S2_TEST(rem_arr[1] == 2);
 }

@@ -3,6 +3,7 @@
 #define S2_USING_LIST
 
 #include <cstdlib>
+#include <cstring>
 #include <new>
 
 namespace s2
@@ -119,6 +120,10 @@ namespace s2
 				return;
 			}
 			m_buffer[index].~T();
+			if ((size_t)index < m_length) {
+				//NOTE: This is not safe if there are pointers to the items
+				memmove(m_buffer + index, m_buffer + index + 1, (m_length - index) * sizeof(T));
+			}
 			m_length--;
 		}
 
