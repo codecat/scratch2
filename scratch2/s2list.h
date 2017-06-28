@@ -11,18 +11,15 @@ namespace s2
 	template<typename T>
 	class list;
 
-	template<typename T>
+	template<typename LT, typename T>
 	class listiterator
 	{
 	private:
-		typedef list<T> list_type;
-
-	private:
-		list_type* m_list;
+		LT* m_list;
 		int m_index;
 
 	public:
-		listiterator(list_type* list, int index)
+		listiterator(LT* list, int index)
 		{
 			m_list = list;
 			m_index = index;
@@ -51,50 +48,11 @@ namespace s2
 	};
 
 	template<typename T>
-	class constlistiterator
-	{
-	private:
-		typedef list<T> list_type;
-
-	private:
-		const list_type* m_list;
-		int m_index;
-
-	public:
-		constlistiterator(const list_type* list, int index)
-		{
-			m_list = list;
-			m_index = index;
-		}
-
-		bool operator ==(const constlistiterator &other)
-		{
-			return !operator !=(other);
-		}
-
-		bool operator !=(const constlistiterator &other)
-		{
-			return m_list != other.m_list || m_index != other.m_index;
-		}
-
-		constlistiterator &operator ++()
-		{
-			m_index++;
-			return *this;
-		}
-
-		const T &operator *()
-		{
-			return (*m_list)[m_index];
-		}
-	};
-
-	template<typename T>
 	class list
 	{
 	public:
-		typedef listiterator<T> iterator;
-		typedef constlistiterator<T> constiterator;
+		typedef listiterator<list<T>, T> iterator;
+		typedef listiterator<const list<T>, const T> constiterator;
 
 	private:
 		T* m_buffer;
