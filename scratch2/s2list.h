@@ -51,10 +51,50 @@ namespace s2
 	};
 
 	template<typename T>
+	class constlistiterator
+	{
+	private:
+		typedef list<T> list_type;
+
+	private:
+		const list_type* m_list;
+		int m_index;
+
+	public:
+		constlistiterator(const list_type* list, int index)
+		{
+			m_list = list;
+			m_index = index;
+		}
+
+		bool operator ==(const constlistiterator &other)
+		{
+			return !operator !=(other);
+		}
+
+		bool operator !=(const constlistiterator &other)
+		{
+			return m_list != other.m_list || m_index != other.m_index;
+		}
+
+		constlistiterator &operator ++()
+		{
+			m_index++;
+			return *this;
+		}
+
+		const T &operator *()
+		{
+			return (*m_list)[m_index];
+		}
+	};
+
+	template<typename T>
 	class list
 	{
 	public:
 		typedef listiterator<T> iterator;
+		typedef constlistiterator<T> constiterator;
 
 	private:
 		T* m_buffer;
@@ -142,9 +182,9 @@ namespace s2
 			return iterator(this, 0);
 		}
 
-		const iterator begin() const
+		const constiterator begin() const
 		{
-			return iterator(this, 0);
+			return constiterator(this, 0);
 		}
 
 		iterator end()
@@ -152,9 +192,9 @@ namespace s2
 			return iterator(this, m_length);
 		}
 
-		const iterator end() const
+		const constiterator end() const
 		{
-			return iterator(this, m_length);
+			return constiterator(this, m_length);
 		}
 
 	private:
