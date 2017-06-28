@@ -106,7 +106,7 @@ int main()
 }
 ```
 
-## `s2ref.h`
+## `s2func.h`
 
 Provides a container for executable functions. The most basic example would be:
 
