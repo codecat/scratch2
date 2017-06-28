@@ -17,4 +17,5 @@ add_executable(s2tests
 	tests/test_dict.cpp
 	tests/test_file.cpp
 	tests/test_ref.cpp
+	tests/test_func.cpp
 )
