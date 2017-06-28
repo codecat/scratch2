@@ -7,6 +7,7 @@ Scratch2 is a collection of minimal single-header libraries that implement base 
   * [`s2list.h`](#s2listh)
   * [`s2dict.h`](#s2dicth)
   * [`s2ref.h`](#s2refh)
+  * [`s2func.h`](#s2func)
 * System utility:
   * [`s2file.h`](#s2fileh)
 * Miscellaneous:
@@ -101,6 +102,30 @@ int main()
 	}
 	printf("%d @ %p\n", test.count(), test.ptr());
 
+	return 0;
+}
+```
+
+## `s2ref.h`
+
+Provides a container for executable functions. The most basic example would be:
+
+```c++
+#include <cstdio>
+#include <s2func.h>
+
+int main()
+{
+	int num = 0;
+	s2::func<void()> func = [&num]() {
+		num += 10;
+	};
+
+	for (int i = 0; i < 10; i++) {
+		func();
+	}
+
+	printf("num = %d\n", num);
 	return 0;
 }
 ```
