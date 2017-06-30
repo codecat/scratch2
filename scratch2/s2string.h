@@ -40,6 +40,9 @@ namespace s2
 		bool operator ==(const char* sz) const;
 		bool operator ==(const string &str) const;
 
+		bool operator !=(const char* sz) const;
+		bool operator !=(const string &str) const;
+
 		operator const char*() const;
 
 		char &operator [](int index);
@@ -205,6 +208,16 @@ bool s2::string::operator ==(const char* sz) const
 bool s2::string::operator ==(const s2::string &str) const
 {
 	return !strcmp(m_buffer, str.m_buffer);
+}
+
+bool s2::string::operator !=(const char* sz) const
+{
+	return !!strcmp(m_buffer, sz);
+}
+
+bool s2::string::operator !=(const string &str) const
+{
+	return !!strcmp(m_buffer, str.m_buffer);
 }
 
 s2::string::operator const char*() const
