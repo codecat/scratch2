@@ -24,4 +24,7 @@ void test_string()
 	S2_TEST(str == "Test 10");
 	str.appendf(", and the other test is %f", 3.14159f);
 	S2_TEST(str == "Test 10, and the other test is 3.141590");
+
+	str = s2::strprintf("Test %d %d %d", 10, 20, 30);
+	S2_TEST(str == "Test 10 20 30");
 }

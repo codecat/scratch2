@@ -49,6 +49,8 @@ namespace s2
 		void ensure_memory(size_t size);
 		void resize_memory(size_t size);
 	};
+
+	string strprintf(const char* format, ...);
 }
 
 #ifdef S2_IMPL
@@ -58,6 +60,8 @@ namespace s2
 #include <cassert>
 #include <cstdarg>
 #include <cstdio>
+
+const size_t min_buffer_size = 24;
 
 s2::string::string()
 {
@@ -126,8 +130,6 @@ void s2::string::append(const char* sz, size_t start, size_t len)
 
 void s2::string::setf(const char* format, ...)
 {
-	const size_t min_buffer_size = 24;
-
 	ensure_memory(min_buffer_size);
 
 	va_list vl;
@@ -149,8 +151,6 @@ void s2::string::setf(const char* format, ...)
 
 void s2::string::appendf(const char* format, ...)
 {
-	const size_t min_buffer_size = 24;
-
 	char* buffer = (char*)malloc(min_buffer_size);
 
 	va_list vl;
@@ -234,5 +234,26 @@ void s2::string::resize_memory(size_t size)
 {
 	m_allocSize = size;
 	m_buffer = (char*)realloc(m_buffer, m_allocSize);
+}
+
+s2::string s2::strprintf(const char* format, ...)
+{
+	char* buffer = (char*)malloc(min_buffer_size);
+
+	va_list vl;
+	va_start(vl, format);
+	int len = vsnprintf(buffer, min_buffer_size, format, vl);
+	va_end(vl);
+
+	if (len >= min_buffer_size) {
+		buffer = (char*)realloc(buffer, len + 1);
+
+		va_list vl;
+		va_start(vl, format);
+		len = vsnprintf(buffer, len + 1, format, vl);
+		va_end(vl);
+	}
+
+	return s2::string(buffer);
 }
 #endif
