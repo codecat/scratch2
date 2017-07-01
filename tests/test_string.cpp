@@ -18,6 +18,9 @@ void test_string()
 	str += " world";
 	S2_TEST(str == "Hello world");
 
+	S2_TEST(str.indexof("world") == 6);
+	S2_TEST(str.indexof("world!") == -1);
+
 	str.setf("Test");
 	S2_TEST(str == "Test");
 	str.setf("Test %d", 10);
@@ -27,4 +30,11 @@ void test_string()
 
 	str = s2::strprintf("Test %d %d %d", 10, 20, 30);
 	S2_TEST(str == "Test 10 20 30");
+
+	s2::stringsplit parse(str, " ");
+	S2_TEST(parse.len() == 4);
+	S2_TEST(parse[0] == "Test");
+	S2_TEST(parse[1] == "10");
+	S2_TEST(parse[2] == "20");
+	S2_TEST(parse[3] == "30");
 }

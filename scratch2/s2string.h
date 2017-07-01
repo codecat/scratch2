@@ -6,8 +6,12 @@
 
 namespace s2
 {
+	class stringsplit;
+
 	class string
 	{
+	friend class stringsplit;
+
 	private:
 		char* m_buffer;
 		size_t m_length;
@@ -23,6 +27,9 @@ namespace s2
 
 		size_t len() const;
 		const char* c_str() const;
+
+		int indexof(const char* sz);
+		stringsplit split(const char* delim);
 
 		void append(const char* sz);
 		void append(const char* sz, size_t len);
@@ -54,6 +61,23 @@ namespace s2
 	};
 
 	string strprintf(const char* format, ...);
+
+	class stringsplit
+	{
+	private:
+		char** m_buffer = nullptr;
+		size_t m_length = 0;
+
+	public:
+		stringsplit(const char* sz, const char* delim);
+		~stringsplit();
+
+		size_t len() const;
+		string operator[](size_t index) const;
+
+	private:
+		void add(const char* sz, size_t len);
+	};
 }
 
 #ifdef S2_IMPL
@@ -111,6 +135,20 @@ size_t s2::string::len() const
 const char* s2::string::c_str() const
 {
 	return m_buffer;
+}
+
+int s2::string::indexof(const char* sz)
+{
+	char* p = strstr(m_buffer, sz);
+	if (p == nullptr) {
+		return -1;
+	}
+	return (int)(p - m_buffer);
+}
+
+s2::stringsplit s2::string::split(const char* delim)
+{
+	return stringsplit(m_buffer, delim);
 }
 
 void s2::string::append(const char* sz)
@@ -268,5 +306,52 @@ s2::string s2::strprintf(const char* format, ...)
 	}
 
 	return s2::string(buffer);
+}
+
+s2::stringsplit::stringsplit(const char* sz, const char* delim)
+{
+	const char* p = sz;
+	size_t len = strlen(sz);
+	size_t lenDelim = strlen(delim);
+
+	while (*p != '\0') {
+		char* pos = strstr(p, delim);
+
+		if (pos == nullptr) {
+			add(p, len - (p - sz));
+			return;
+		}
+
+		add(p, pos - p);
+		p = pos + lenDelim;
+	}
+}
+
+s2::stringsplit::~stringsplit()
+{
+	for (int i = 0; i < m_length; i++) {
+		free(m_buffer[i]);
+	}
+	free(m_buffer);
+}
+
+size_t s2::stringsplit::len() const
+{
+	return m_length;
+}
+
+s2::string s2::stringsplit::operator[](size_t index) const
+{
+	return m_buffer[index];
+}
+
+void s2::stringsplit::add(const char* sz, size_t len)
+{
+	m_length++;
+	m_buffer = (char**)realloc(m_buffer, m_length * sizeof(char*));
+	char* p = (char*)malloc(len + 1);
+	memcpy(p, sz, len);
+	p[len] = '\0';
+	m_buffer[m_length - 1] = p;
 }
 #endif
