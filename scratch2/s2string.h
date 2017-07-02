@@ -44,6 +44,9 @@ namespace s2
 		string &operator +=(const char* sz);
 		string &operator +=(const string &str);
 
+		string trim();
+		string trim(const char* sz);
+
 		bool operator ==(const char* sz) const;
 		bool operator ==(const string &str) const;
 
@@ -236,6 +239,40 @@ s2::string &s2::string::operator +=(const char* sz)
 s2::string &s2::string::operator +=(const s2::string &str)
 {
 	return operator +=(str.m_buffer);
+}
+
+s2::string s2::string::trim()
+{
+	return trim("\n\r\t ");
+}
+
+s2::string s2::string::trim(const char* sz)
+{
+	int num = strlen(sz);
+	if (num == 0) {
+		return *this;
+	}
+
+	// "     Hello  _"
+	//      "Hello_ _"
+	int len = strlen(m_buffer);
+	char* p = m_buffer;
+	while (*p != '\0') {
+		if (strchr(sz, *p) == nullptr) {
+			break;
+		}
+		p++;
+	}
+
+	char* pp = m_buffer + (len - 1);
+	while (pp > p) {
+		if (strchr(sz, *pp) == nullptr) {
+			break;
+		}
+		pp--;
+	}
+
+	return string(p, (pp - p) + 1);
 }
 
 bool s2::string::operator ==(const char* sz) const

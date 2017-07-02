@@ -37,4 +37,13 @@ void test_string()
 	S2_TEST(parse[1] == "10");
 	S2_TEST(parse[2] == "20");
 	S2_TEST(parse[3] == "30");
+
+	str = "   \t\t foo\tbar\n\n  \r\n";
+	S2_TEST(str.trim() == "foo\tbar");
+	str = "   \t\t foo\tbar";
+	S2_TEST(str.trim() == "foo\tbar");
+	str = "foo\tbar\n\n  \r\n";
+	S2_TEST(str.trim() == "foo\tbar");
+	str = "foo\tbar";
+	S2_TEST(str.trim() == "foo\tbar");
 }
