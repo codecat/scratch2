@@ -1,6 +1,6 @@
 # s2
 
-Scratch2 is a collection of minimal single-header libraries that implement base functionality. All header files can be included invidiually, the headers do not depend on each other.
+Scratch2 is a collection of minimal single-header libraries that implement base functionality. All header files can be included individually, the headers do not depend on each other.
 
 * Absolute core:
   * [`s2string.h`](#s2stringh)
