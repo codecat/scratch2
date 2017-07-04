@@ -29,7 +29,7 @@ namespace s2
 		const char* c_str() const;
 
 		int indexof(const char* sz);
-		stringsplit split(const char* delim);
+		stringsplit split(const char* delim, int limit = 0);
 
 		void append(const char* sz);
 		void append(const char* sz, size_t len);
@@ -72,7 +72,7 @@ namespace s2
 		size_t m_length = 0;
 
 	public:
-		stringsplit(const char* sz, const char* delim);
+		stringsplit(const char* sz, const char* delim, int limit = 0);
 		~stringsplit();
 
 		size_t len() const;
@@ -149,9 +149,9 @@ int s2::string::indexof(const char* sz)
 	return (int)(p - m_buffer);
 }
 
-s2::stringsplit s2::string::split(const char* delim)
+s2::stringsplit s2::string::split(const char* delim, int limit)
 {
-	return stringsplit(m_buffer, delim);
+	return stringsplit(m_buffer, delim, limit);
 }
 
 void s2::string::append(const char* sz)
@@ -345,7 +345,7 @@ s2::string s2::strprintf(const char* format, ...)
 	return s2::string(buffer);
 }
 
-s2::stringsplit::stringsplit(const char* sz, const char* delim)
+s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
 {
 	const char* p = sz;
 	size_t len = strlen(sz);
@@ -354,7 +354,7 @@ s2::stringsplit::stringsplit(const char* sz, const char* delim)
 	while (*p != '\0') {
 		char* pos = strstr(p, delim);
 
-		if (pos == nullptr) {
+		if (pos == nullptr || (limit > 0 && m_length + 1 == limit)) {
 			add(p, len - (p - sz));
 			return;
 		}

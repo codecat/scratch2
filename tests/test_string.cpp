@@ -38,6 +38,11 @@ void test_string()
 	S2_TEST(parse[2] == "20");
 	S2_TEST(parse[3] == "30");
 
+	s2::stringsplit parse2("this is a test", " ", 2);
+	S2_TEST(parse2.len() == 2);
+	S2_TEST(parse2[0] == "this");
+	S2_TEST(parse2[1] == "is a test");
+
 	str = "   \t\t foo\tbar\n\n  \r\n";
 	S2_TEST(str.trim() == "foo\tbar");
 	str = "   \t\t foo\tbar";
