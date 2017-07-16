@@ -30,6 +30,8 @@ namespace s2
 
 		int indexof(const char* sz);
 		bool contains(const char* sz);
+		bool startswith(const char* sz);
+		bool endswith(const char* sz);
 		stringsplit split(const char* delim, int limit = 0);
 
 		void append(const char* sz);
@@ -153,6 +155,16 @@ int s2::string::indexof(const char* sz)
 bool s2::string::contains(const char* sz)
 {
 	return strstr(m_buffer, sz) != nullptr;
+}
+
+bool s2::string::startswith(const char* sz)
+{
+	return strstr(m_buffer, sz) == m_buffer;
+}
+
+bool s2::string::endswith(const char* sz)
+{
+	return !strcmp(m_buffer + m_length - strlen(sz), sz);
 }
 
 s2::stringsplit s2::string::split(const char* delim, int limit)

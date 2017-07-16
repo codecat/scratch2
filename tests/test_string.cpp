@@ -17,8 +17,17 @@ void test_string()
 	S2_TEST(str == "Hello");
 	str += " world";
 	S2_TEST(str == "Hello world");
+
 	S2_TEST(str.contains("world"));
 	S2_TEST(!str.contains("WORLD"));
+
+	S2_TEST(str.startswith("Hello"));
+	S2_TEST(!str.startswith("world"));
+	S2_TEST(str.startswith("Hello world"));
+
+	S2_TEST(str.endswith(" world"));
+	S2_TEST(!str.endswith(" worlddd"));
+	S2_TEST(str.endswith("Hello world"));
 
 	S2_TEST(str.indexof("world") == 6);
 	S2_TEST(str.indexof("world!") == -1);
