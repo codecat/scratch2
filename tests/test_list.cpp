@@ -16,6 +16,10 @@ void test_list()
 	S2_TEST(arr[1] == 20);
 	arr[2] = 50;
 	S2_TEST(arr[2] == 50);
+	S2_TEST(arr.indexof(20) == 1);
+	S2_TEST(arr.indexof(15) == -1);
+	S2_TEST(arr.contains(20));
+	S2_TEST(!arr.contains(15));
 
 	s2::list<int> arr2(arr);
 	S2_TEST(arr2.len() == 3);

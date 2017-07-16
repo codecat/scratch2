@@ -125,6 +125,21 @@ namespace s2
 			m_length--;
 		}
 
+		int indexof(const T &o)
+		{
+			for (size_t i = 0; i < m_length; i++) {
+				if (m_buffer[i] == o) {
+					return (int)i;
+				}
+			}
+			return -1;
+		}
+
+		bool contains(const T &o)
+		{
+			return indexof(o) != -1;
+		}
+
 		T &operator [](int index)
 		{
 			return m_buffer[index];
