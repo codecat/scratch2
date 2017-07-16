@@ -17,6 +17,8 @@ void test_string()
 	S2_TEST(str == "Hello");
 	str += " world";
 	S2_TEST(str == "Hello world");
+	S2_TEST(str.contains("world"));
+	S2_TEST(!str.contains("WORLD"));
 
 	S2_TEST(str.indexof("world") == 6);
 	S2_TEST(str.indexof("world!") == -1);

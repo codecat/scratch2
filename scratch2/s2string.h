@@ -29,6 +29,7 @@ namespace s2
 		const char* c_str() const;
 
 		int indexof(const char* sz);
+		bool contains(const char* sz);
 		stringsplit split(const char* delim, int limit = 0);
 
 		void append(const char* sz);
@@ -147,6 +148,11 @@ int s2::string::indexof(const char* sz)
 		return -1;
 	}
 	return (int)(p - m_buffer);
+}
+
+bool s2::string::contains(const char* sz)
+{
+	return strstr(m_buffer, sz) != nullptr;
 }
 
 s2::stringsplit s2::string::split(const char* delim, int limit)
