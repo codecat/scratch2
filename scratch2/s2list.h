@@ -89,10 +89,17 @@ namespace s2
 
 		~list()
 		{
-			clear();
-			if (m_buffer != nullptr) {
-				free(m_buffer);
+			clear_memory();
+		}
+
+		list &operator =(std::initializer_list<T> l)
+		{
+			clear_memory();
+			ensure_memory(l.size());
+			for (const T &o : l) {
+				add(o);
 			}
+			return *this;
 		}
 
 		void clear()
@@ -182,6 +189,16 @@ namespace s2
 		}
 
 	private:
+		void clear_memory()
+		{
+			clear();
+			if (m_buffer != nullptr) {
+				free(m_buffer);
+				m_buffer = nullptr;
+				m_allocSize = 0;
+			}
+		}
+
 		void ensure_memory(size_t count)
 		{
 			if (m_allocSize >= count) {

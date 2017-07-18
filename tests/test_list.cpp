@@ -85,4 +85,8 @@ void test_list()
 	};
 	S2_TEST(inst_arr.len() == 5);
 	S2_TEST(inst_arr[0] == 1);
+
+	inst_arr = { 5, 4, 3, 2 };
+	S2_TEST(inst_arr.len() == 4);
+	S2_TEST(inst_arr[0] == 5);
 }
