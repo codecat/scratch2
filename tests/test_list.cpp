@@ -79,4 +79,10 @@ void test_list()
 	rem_arr.remove(2);
 	S2_TEST(rem_arr.len() == 2);
 	S2_TEST(rem_arr[1] == 2);
+
+	s2::list<int> inst_arr = {
+		1, 2, 3, 4, 5
+	};
+	S2_TEST(inst_arr.len() == 5);
+	S2_TEST(inst_arr[0] == 1);
 }

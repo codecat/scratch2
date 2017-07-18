@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <new>
+#include <initializer_list>
 
 namespace s2
 {
@@ -71,8 +72,18 @@ namespace s2
 			: list()
 		{
 			size_t copylen = copy.len();
+			ensure_memory(copylen);
 			for (size_t i = 0; i < copylen; i++) {
 				add(copy[i]);
+			}
+		}
+
+		list(std::initializer_list<T> l)
+			: list()
+		{
+			ensure_memory(l.size());
+			for (const T &o : l) {
+				add(o);
 			}
 		}
 
