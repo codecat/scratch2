@@ -370,7 +370,7 @@ s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
 	size_t lenDelim = strlen(delim);
 
 	while (*p != '\0') {
-		char* pos = strstr(p, delim);
+		const char* pos = strstr(p, delim);
 
 		if (pos == nullptr || (limit > 0 && m_length + 1 == limit)) {
 			add(p, len - (p - sz));
@@ -384,7 +384,7 @@ s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
 
 s2::stringsplit::~stringsplit()
 {
-	for (int i = 0; i < m_length; i++) {
+	for (size_t i = 0; i < m_length; i++) {
 		free(m_buffer[i]);
 	}
 	free(m_buffer);
