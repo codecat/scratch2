@@ -28,11 +28,11 @@ namespace s2
 		size_t len() const;
 		const char* c_str() const;
 
-		int indexof(const char* sz);
-		bool contains(const char* sz);
-		bool startswith(const char* sz);
-		bool endswith(const char* sz);
-		stringsplit split(const char* delim, int limit = 0);
+		int indexof(const char* sz) const;
+		bool contains(const char* sz) const;
+		bool startswith(const char* sz) const;
+		bool endswith(const char* sz) const;
+		stringsplit split(const char* delim, int limit = 0) const;
 
 		void append(const char* sz);
 		void append(const char* sz, size_t len);
@@ -47,8 +47,8 @@ namespace s2
 		string &operator +=(const char* sz);
 		string &operator +=(const string &str);
 
-		string trim();
-		string trim(const char* sz);
+		string trim() const;
+		string trim(const char* sz) const;
 
 		bool operator ==(const char* sz) const;
 		bool operator ==(const string &str) const;
@@ -143,7 +143,7 @@ const char* s2::string::c_str() const
 	return m_buffer;
 }
 
-int s2::string::indexof(const char* sz)
+int s2::string::indexof(const char* sz) const
 {
 	char* p = strstr(m_buffer, sz);
 	if (p == nullptr) {
@@ -152,22 +152,22 @@ int s2::string::indexof(const char* sz)
 	return (int)(p - m_buffer);
 }
 
-bool s2::string::contains(const char* sz)
+bool s2::string::contains(const char* sz) const
 {
 	return strstr(m_buffer, sz) != nullptr;
 }
 
-bool s2::string::startswith(const char* sz)
+bool s2::string::startswith(const char* sz) const
 {
 	return strstr(m_buffer, sz) == m_buffer;
 }
 
-bool s2::string::endswith(const char* sz)
+bool s2::string::endswith(const char* sz) const
 {
 	return !strcmp(m_buffer + m_length - strlen(sz), sz);
 }
 
-s2::stringsplit s2::string::split(const char* delim, int limit)
+s2::stringsplit s2::string::split(const char* delim, int limit) const
 {
 	return stringsplit(m_buffer, delim, limit);
 }
@@ -259,20 +259,18 @@ s2::string &s2::string::operator +=(const s2::string &str)
 	return operator +=(str.m_buffer);
 }
 
-s2::string s2::string::trim()
+s2::string s2::string::trim() const
 {
 	return trim("\n\r\t ");
 }
 
-s2::string s2::string::trim(const char* sz)
+s2::string s2::string::trim(const char* sz) const
 {
 	int num = strlen(sz);
 	if (num == 0) {
 		return *this;
 	}
 
-	// "     Hello  _"
-	//      "Hello_ _"
 	int len = strlen(m_buffer);
 	char* p = m_buffer;
 	while (*p != '\0') {
