@@ -148,12 +148,11 @@ namespace s2
 			return add();
 		}
 
-		void pop()
+		T pop()
 		{
-			if (m_length == 0) {
-				return;
-			}
+			T ret = top();
 			remove(m_length - 1);
+			return ret;
 		}
 
 		T &top()

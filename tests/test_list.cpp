@@ -96,8 +96,7 @@ void test_list()
 	stack.push() = 15;
 	S2_TEST(stack.len() == 3);
 	S2_TEST(stack.top() == 15);
-	stack.pop();
-	S2_TEST(stack.top() == 10);
-	stack.pop();
+	S2_TEST(stack.pop() == 15);
+	S2_TEST(stack.pop() == 10);
 	S2_TEST(stack.top() == 5);
 }
