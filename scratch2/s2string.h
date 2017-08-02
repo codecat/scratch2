@@ -34,6 +34,9 @@ namespace s2
 		bool endswith(const char* sz) const;
 		stringsplit split(const char* delim, int limit = 0) const;
 
+		string substr(int start) const;
+		string substr(int start, int len) const;
+
 		void append(const char* sz);
 		void append(const char* sz, size_t len);
 		void append(const char* sz, size_t start, size_t len);
@@ -170,6 +173,16 @@ bool s2::string::endswith(const char* sz) const
 s2::stringsplit s2::string::split(const char* delim, int limit) const
 {
 	return stringsplit(m_buffer, delim, limit);
+}
+
+s2::string s2::string::substr(int start) const
+{
+	return string(m_buffer + start);
+}
+
+s2::string s2::string::substr(int start, int len) const
+{
+	return string(m_buffer + start, len);
 }
 
 void s2::string::append(const char* sz)
