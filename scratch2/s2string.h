@@ -177,11 +177,33 @@ s2::stringsplit s2::string::split(const char* delim, int limit) const
 
 s2::string s2::string::substr(int start) const
 {
+	if (m_length == 0) {
+		return "";
+	}
+	while (start < 0) {
+		start += m_length;
+	}
+	if (start >= m_length) {
+		return "";
+	}
 	return string(m_buffer + start);
 }
 
 s2::string s2::string::substr(int start, int len) const
 {
+	if (m_length == 0) {
+		return "";
+	}
+	while (start < 0) {
+		start += m_length;
+	}
+	if (start >= m_length) {
+		return "";
+	}
+	int remainder = strlen(m_buffer) + start;
+	if (len > remainder) {
+		len = remainder;
+	}
 	return string(m_buffer + start, len);
 }
 

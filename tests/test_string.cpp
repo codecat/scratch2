@@ -62,4 +62,13 @@ void test_string()
 	S2_TEST(str.trim() == "foo\tbar");
 	str = "foo\tbar";
 	S2_TEST(str.trim() == "foo\tbar");
+
+	S2_TEST(str.substr(4) == "bar");
+	S2_TEST(str.substr(0, 3) == "foo");
+	S2_TEST(str.substr(3, 1) == "\t");
+	S2_TEST(str.substr(-3) == "bar");
+	S2_TEST(str.substr(str.len()) == "");
+	S2_TEST(str.substr(str.len() + 3) == "");
+	S2_TEST(str.substr(0, str.len()) == "foo\tbar");
+	S2_TEST(str.substr(0, str.len() + 3) == "foo\tbar");
 }
