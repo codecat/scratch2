@@ -89,4 +89,15 @@ void test_list()
 	inst_arr = { 5, 4, 3, 2 };
 	S2_TEST(inst_arr.len() == 4);
 	S2_TEST(inst_arr[0] == 5);
+
+	s2::list<int> stack;
+	stack.push() = 5;
+	stack.push() = 10;
+	stack.push() = 15;
+	S2_TEST(stack.len() == 3);
+	S2_TEST(stack.top() == 15);
+	stack.pop();
+	S2_TEST(stack.top() == 10);
+	stack.pop();
+	S2_TEST(stack.top() == 5);
 }

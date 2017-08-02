@@ -143,6 +143,29 @@ namespace s2
 			m_length--;
 		}
 
+		T &push()
+		{
+			return add();
+		}
+
+		void pop()
+		{
+			if (m_length == 0) {
+				return;
+			}
+			remove(m_length - 1);
+		}
+
+		T &top()
+		{
+			return m_buffer[m_length - 1];
+		}
+
+		const T &top() const
+		{
+			return m_buffer[m_length - 1];
+		}
+
 		int indexof(const T &o)
 		{
 			for (size_t i = 0; i < m_length; i++) {
