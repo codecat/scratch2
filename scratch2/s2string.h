@@ -41,6 +41,10 @@ namespace s2
 		void append(const char* sz, size_t len);
 		void append(const char* sz, size_t start, size_t len);
 
+		void insert(const char* sz, size_t pos);
+		void insert(const char* sz, size_t pos, size_t len);
+		void remove(size_t pos, size_t len);
+
 		void setf(const char* format, ...);
 		void appendf(const char* format, ...);
 
@@ -222,6 +226,27 @@ void s2::string::append(const char* sz, size_t start, size_t len)
 	ensure_memory(m_length + len + 1);
 	memcpy(m_buffer + m_length, sz + start, len);
 	m_length += len;
+	m_buffer[m_length] = '\0';
+}
+
+void s2::string::insert(const char* sz, size_t pos)
+{
+	insert(sz, pos, strlen(sz));
+}
+
+void s2::string::insert(const char* sz, size_t pos, size_t len)
+{
+	ensure_memory(m_length + len + 1);
+	memmove(m_buffer + pos + len, m_buffer + pos, m_length - pos);
+	memcpy(m_buffer + pos, sz, len);
+	m_length += len;
+	m_buffer[m_length] = '\0';
+}
+
+void s2::string::remove(size_t pos, size_t len)
+{
+	memmove(m_buffer + pos, m_buffer + pos + len, m_length - pos - len);
+	m_length -= len;
 	m_buffer[m_length] = '\0';
 }
 

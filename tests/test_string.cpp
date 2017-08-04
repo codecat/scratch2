@@ -71,4 +71,13 @@ void test_string()
 	S2_TEST(str.substr(str.len() + 3) == "");
 	S2_TEST(str.substr(0, str.len()) == "foo\tbar");
 	S2_TEST(str.substr(0, str.len() + 3) == "foo\tbar");
+
+	str = "helloworld";
+	str.insert(", ", 5);
+	S2_TEST(str == "hello, world");
+	S2_TEST(str.len() == 12);
+
+	str.remove(5, 2);
+	S2_TEST(str == "helloworld");
+	S2_TEST(str.len() == 10);
 }
