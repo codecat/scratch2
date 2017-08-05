@@ -187,7 +187,7 @@ s2::string s2::string::substr(int start) const
 	while (start < 0) {
 		start += m_length;
 	}
-	if (start >= m_length) {
+	if ((size_t)start >= m_length) {
 		return "";
 	}
 	return string(m_buffer + start);
@@ -201,7 +201,7 @@ s2::string s2::string::substr(int start, int len) const
 	while (start < 0) {
 		start += m_length;
 	}
-	if (start >= m_length) {
+	if ((size_t)start >= m_length) {
 		return "";
 	}
 	int remainder = strlen(m_buffer) + start;
