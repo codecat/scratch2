@@ -418,7 +418,9 @@ s2::string s2::strprintf(const char* format, ...)
 		va_end(vl);
 	}
 
-	return s2::string(buffer);
+	s2::string ret = buffer;
+	free(buffer);
+	return ret;
 }
 
 s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
