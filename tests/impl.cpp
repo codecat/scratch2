@@ -6,3 +6,4 @@
 #include <s2file.h>
 #include <s2ref.h>
 #include <s2test.h>
+#include <s2fiber.h>

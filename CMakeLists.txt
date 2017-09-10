@@ -8,6 +8,10 @@ include_directories(
 	scratch2
 )
 
+if(APPLE)
+	add_definitions(-D_XOPEN_SOURCE)
+endif()
+
 add_executable(s2tests
 	tests/tests.cpp
 	tests/impl.cpp
@@ -18,4 +22,5 @@ add_executable(s2tests
 	tests/test_file.cpp
 	tests/test_ref.cpp
 	tests/test_func.cpp
+	tests/test_fiber.cpp
 )
