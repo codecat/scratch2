@@ -29,6 +29,8 @@ void test_string()
 	S2_TEST(!str.endswith(" worlddd"));
 	S2_TEST(str.endswith("Hello world"));
 
+	S2_TEST(str.indexof('l') == 2);
+	S2_TEST(str.indexof('!') == -1);
 	S2_TEST(str.indexof("world") == 6);
 	S2_TEST(str.indexof("world!") == -1);
 
