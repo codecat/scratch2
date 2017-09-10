@@ -4,24 +4,11 @@
 
 #include <cstdio>
 
+static int _x = 0;
+
 void test_fiber()
 {
 	s2::test_group("fiber");
-
-	{
-		s2::fiber fib([](s2::fiber &f) {
-			while (true) {
-				printf("fiber call\n");
-				f.yield();
-				printf("fiber ret\n");
-			}
-		});
-		while (true) {
-			printf("going to fib..\n");
-			fib.resume();
-			printf("returned from fib..\n");
-		}
-	}
 
 	{
 		s2::fiber fib([](s2::fiber &f) { });
@@ -38,15 +25,15 @@ void test_fiber()
 	}
 
 	{
-		int x = 0;
 		s2::fiber fib([](s2::fiber &f) {
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < 3; i++) {
+				_x = i;
 				f.yield();
 			}
 		});
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 3; i++) {
 			fib.resume();
-			S2_TEST(x == i + 1);
+			S2_TEST(_x == i);
 		}
 		fib.resume();
 		S2_TEST(fib.isfinished());

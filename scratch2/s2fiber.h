@@ -15,6 +15,9 @@ namespace s2
 		typedef void* fiber_type;
 
 	private:
+#ifndef _MSC_VER
+		void* m_stack;
+#endif
 		fiber_type m_fiber;
 		fiber_type m_fiberParent;
 		func_type m_func;
@@ -73,7 +76,7 @@ s2::fiber::fiber(const func_type &func)
 	m_fiberParent = new ucontext_t;
 
 	getcontext((ucontext_t*)m_fiber);
-	((ucontext_t*)m_fiber)->uc_stack.ss_sp = malloc(SIGSTKSZ);
+	((ucontext_t*)m_fiber)->uc_stack.ss_sp = m_stack = malloc(SIGSTKSZ);
 	((ucontext_t*)m_fiber)->uc_stack.ss_size = SIGSTKSZ;
 	((ucontext_t*)m_fiber)->uc_link = (ucontext_t*)m_fiberParent;
 	makecontext((ucontext_t*)m_fiber, (void(*)())fiberroutine, 1, this);
@@ -94,7 +97,7 @@ void s2::fiber::clear()
 #ifdef _MSC_VER
 		DeleteFiber(m_fiber);
 #else
-		free(((ucontext_t*)m_fiber)->uc_stack.ss_sp);
+		free(m_stack);
 		delete (ucontext_t*)m_fiber;
 #endif
 		m_fiber = nullptr;
@@ -122,8 +125,7 @@ void s2::fiber::yield()
 #ifdef _MSC_VER
 	SwitchToFiber(m_fiberParent);
 #else
-	static ucontext_t ctx;
-	swapcontext(&ctx, (ucontext_t*)m_fiberParent);
+	swapcontext((ucontext_t*)m_fiber, (ucontext_t*)m_fiberParent);
 #endif
 }
 
