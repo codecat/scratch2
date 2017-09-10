@@ -10,6 +10,7 @@ Scratch2 is a collection of minimal single-header libraries that implement base 
   * [`s2func.h`](#s2func)
 * System utility:
   * [`s2file.h`](#s2fileh)
+  * [`s2fiber.h`](#s2fiberh)
 * Miscellaneous:
   * [`s2test.h`](#s2testh)
 
@@ -156,6 +157,38 @@ Also included are the following functions:
 bool s2::file_exists(const char* filename);
 size_t s2::file_size(const char* filename);
 ```
+
+## `s2fiber.h`
+
+Provides the class `s2::fiber` to use for fiber scheduling. The most basic example would be:
+
+```c++
+#include <cstdio>
+#include <s2fiber.h>
+
+static void fiber_func(s2::fiber &fib)
+{
+	for (int i = 0; i < 10; i++) {
+		printf("Fiber tick %d\n", i);
+		fib.yield();
+	}
+	printf("Finished!\n");
+}
+
+int main()
+{
+	s2::fiber fib(fiber_func);
+
+	while (!fib.isfinished()) {
+		printf("Not finished yet..\n");
+		fib.resume();
+	}
+
+	return 0;
+}
+```
+
+Note that on Mac OS, you are currently required to build with `-D_XOPEN_SOURCE`.
 
 ## `s2test.h`
 
