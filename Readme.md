@@ -216,3 +216,7 @@ Tests can also be grouped by simply calling `s2::test_group(const char* group)` 
 
 * Ability to replace standard lib functions such as `malloc`, `printf`, and `fopen` with custom functions
 * Consider string using stack memory for short strings
+
+# License
+
+Scratch2 is MIT licensed.
