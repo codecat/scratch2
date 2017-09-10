@@ -89,4 +89,7 @@ void test_string()
 	S2_TEST(helloworld == "hello world");
 	S2_TEST(hello == "hello");
 	S2_TEST(world == "world");
+
+	str = "HELLO, " + world;
+	S2_TEST(str == "HELLO, world");
 }

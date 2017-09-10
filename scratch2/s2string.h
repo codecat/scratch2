@@ -78,6 +78,8 @@ namespace s2
 		void resize_memory(size_t size);
 	};
 
+	string operator +(const char* lhs, const string &rhs);
+
 	string strprintf(const char* format, ...);
 
 	class stringsplit
@@ -425,6 +427,11 @@ void s2::string::resize_memory(size_t size)
 {
 	m_allocSize = size;
 	m_buffer = (char*)realloc(m_buffer, m_allocSize);
+}
+
+s2::string s2::operator +(const char* lhs, const string &rhs)
+{
+	return string(lhs) += rhs;
 }
 
 s2::string s2::strprintf(const char* format, ...)
