@@ -47,6 +47,9 @@ namespace s2
 		void insert(const char* sz, size_t pos, size_t len);
 		void remove(size_t pos, size_t len);
 
+		string replace(char find, char replace) const;
+		string replace(const char* find, const char* replace) const;
+
 		void setf(const char* format, ...);
 		void appendf(const char* format, ...);
 
@@ -267,6 +270,38 @@ void s2::string::remove(size_t pos, size_t len)
 	memmove(m_buffer + pos, m_buffer + pos + len, m_length - pos - len);
 	m_length -= len;
 	m_buffer[m_length] = '\0';
+}
+
+s2::string s2::string::replace(char find, char replace) const
+{
+	s2::string ret(*this);
+	char* p = ret.m_buffer;
+	while (*p != '\0') {
+		if (*p == find) {
+			*p = replace;
+		}
+		p++;
+	}
+	return ret;
+}
+
+s2::string s2::string::replace(const char* find, const char* replace) const
+{
+	size_t findlen = strlen(find);
+	size_t replacelen = strlen(replace);
+
+	s2::string ret(*this);
+	int index = -1;
+	while (true) {
+		index = ret.indexof(find);
+		if (index == -1) {
+			break;
+		}
+
+		ret.remove(index, findlen);
+		ret.insert(replace, index, replacelen);
+	}
+	return ret;
 }
 
 void s2::string::setf(const char* format, ...)

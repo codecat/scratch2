@@ -92,4 +92,18 @@ void test_string()
 
 	str = "HELLO, " + world;
 	S2_TEST(str == "HELLO, world");
+
+	str = "this.is.a.test";
+	str = str.replace('.', ' ');
+	S2_TEST(str == "this is a test");
+	str = str.replace("a", "my");
+	S2_TEST(str == "this is my test");
+	str = "foo";
+	str = str.replace("foo", "bar");
+	S2_TEST(str == "bar");
+	str = str.replace("bar", "foooo");
+	S2_TEST(str == "foooo");
+	str = str.replace("foooo", "b");
+	S2_TEST(str == "b");
+	S2_TEST(str.len() == 1);
 }
