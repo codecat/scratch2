@@ -23,6 +23,8 @@ namespace s2
 		func_type m_func;
 		bool m_finished;
 
+		void* m_userdata;
+
 	public:
 		fiber(const func_type &func);
 		~fiber();
@@ -31,6 +33,10 @@ namespace s2
 
 		void yield();
 		bool resume();
+
+		void userdata(void* p);
+		void* userdata();
+
 		bool isfinished();
 
 		void internal_execute();
@@ -84,6 +90,8 @@ s2::fiber::fiber(const func_type &func)
 
 	m_func = func;
 	m_finished = false;
+
+	m_userdata = nullptr;
 }
 
 s2::fiber::~fiber()
@@ -154,6 +162,16 @@ bool s2::fiber::resume()
 		clear();
 	}
 	return true;
+}
+
+void s2::fiber::userdata(void* p)
+{
+	m_userdata = p;
+}
+
+void* s2::fiber::userdata()
+{
+	return m_userdata;
 }
 
 bool s2::fiber::isfinished()

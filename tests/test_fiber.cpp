@@ -35,6 +35,26 @@ void test_fiber()
 			fib.resume();
 			S2_TEST(_x == i);
 		}
+		S2_TEST(!fib.isfinished());
+		fib.resume();
+		S2_TEST(fib.isfinished());
+	}
+
+	{
+		int x = 0;
+		s2::fiber fib([](s2::fiber &f) {
+			int &x = *(int*)f.userdata();
+			for (int i = 0; i < 3; i++) {
+				x = i;
+				f.yield();
+			}
+		});
+		fib.userdata(&x);
+		for (int i = 0; i < 3; i++) {
+			fib.resume();
+			S2_TEST(x == i);
+		}
+		S2_TEST(!fib.isfinished());
 		fib.resume();
 		S2_TEST(fib.isfinished());
 	}
