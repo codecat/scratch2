@@ -54,6 +54,9 @@ namespace s2
 		string &operator +=(const char* sz);
 		string &operator +=(const string &str);
 
+		string operator +(const char* sz);
+		string operator +(const string &str);
+
 		string trim() const;
 		string trim(const char* sz) const;
 
@@ -317,6 +320,16 @@ s2::string &s2::string::operator +=(const char* sz)
 s2::string &s2::string::operator +=(const s2::string &str)
 {
 	return operator +=(str.m_buffer);
+}
+
+s2::string s2::string::operator +(const char* sz)
+{
+	return string(*this) += sz;
+}
+
+s2::string s2::string::operator +(const string &str)
+{
+	return string(*this) += str;
 }
 
 s2::string s2::string::trim() const

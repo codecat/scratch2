@@ -80,4 +80,11 @@ void test_string()
 	str.remove(5, 2);
 	S2_TEST(str == "helloworld");
 	S2_TEST(str.len() == 10);
+
+	s2::string hello = "hello";
+	s2::string world = "world";
+	s2::string helloworld = hello + " " + world;
+	S2_TEST(helloworld == "hello world");
+	S2_TEST(hello == "hello");
+	S2_TEST(world == "world");
 }
