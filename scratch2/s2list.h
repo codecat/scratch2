@@ -7,6 +7,10 @@
 #include <new>
 #include <initializer_list>
 
+#ifndef S2_LIST_ALLOC_STEP
+#define S2_LIST_ALLOC_STEP 16
+#endif
+
 namespace s2
 {
 	template<typename T>
@@ -226,6 +230,11 @@ namespace s2
 			if (m_allocSize >= count) {
 				return;
 			}
+
+			if (count % S2_LIST_ALLOC_STEP > 0) {
+				count += (count % S2_LIST_ALLOC_STEP);
+			}
+
 			m_buffer = (T*)realloc(m_buffer, count * sizeof(T));
 			m_allocSize = count;
 		}

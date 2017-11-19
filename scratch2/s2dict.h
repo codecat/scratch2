@@ -6,6 +6,10 @@
 #include <cstring>
 #include <new>
 
+#ifndef S2_DICT_ALLOC_STEP
+#define S2_DICT_ALLOC_STEP 16
+#endif
+
 namespace s2
 {
 	enum class dictexception
@@ -332,6 +336,11 @@ namespace s2
 			if (m_allocSize >= count) {
 				return;
 			}
+
+			if (count % S2_DICT_ALLOC_STEP > 0) {
+				count += (count % S2_DICT_ALLOC_STEP);
+			}
+
 			m_pairs = (pair*)realloc(m_pairs, count * sizeof(pair));
 			m_allocSize = count;
 		}
