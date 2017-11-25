@@ -44,6 +44,13 @@ namespace s2
 		size_t read(void* buffer, size_t size);
 		size_t write(void* buffer, size_t size);
 
+#if defined(S2_USING_STRING)
+		s2::string readline();
+#else
+		char* readline();
+#endif
+		void writeline(const char* buffer);
+
 		template<typename T>
 		void read(T &o)
 		{
@@ -171,7 +178,7 @@ size_t s2::file::read(void* buffer, size_t size)
 	if (m_fh == nullptr) {
 		return 0;
 	}
-	return fread(buffer, size, 1, (FILE*)m_fh);
+	return fread(buffer, 1, size, (FILE*)m_fh);
 }
 
 size_t s2::file::write(void* buffer, size_t size)
@@ -180,7 +187,68 @@ size_t s2::file::write(void* buffer, size_t size)
 		return 0;
 	}
 	m_size += size;
-	return fwrite(buffer, size, 1, (FILE*)m_fh);
+	return fwrite(buffer, 1, size, (FILE*)m_fh);
+}
+
+#if defined(S2_USING_STRING)
+s2::string s2::file::readline()
+#else
+char* s2::file::readline()
+#endif
+{
+	size_t bufferSize = 128;
+	size_t bufferOffset = 0;
+	char* buffer = (char*)malloc(bufferSize + 1);
+
+	long startPos = ftell((FILE*)m_fh);
+
+	while (true) {
+		size_t bytesRead = fread(buffer + bufferOffset, 1, 128, (FILE*)m_fh);
+		buffer[bytesRead] = '\0';
+
+		if (bytesRead == 0) {
+			// we hit eof early
+			break;
+		}
+
+		char* newline = strchr(buffer, '\n');
+		if (newline != nullptr) {
+			// we found a newline
+			*newline = '\0';
+			if (newline > buffer && *(newline - 1) == '\r') {
+				*(newline - 1) = '\0';
+			}
+			fseek((FILE*)m_fh, startPos + (newline - buffer) + 1, SEEK_SET);
+			break;
+		}
+
+		if (bytesRead < 128) {
+			// we've hit eof and there's no newline
+			break;
+		}
+
+		// we need to read more data
+		bufferSize += 128;
+		bufferOffset += 128;
+		buffer = (char*)realloc(buffer, bufferSize + 1);
+	}
+
+#if defined(S2_USING_STRING)
+	s2::string ret(buffer);
+	free(buffer);
+	return ret;
+#else
+	return buffer;
+#endif
+}
+
+
+void s2::file::writeline(const char* buffer)
+{
+	size_t len = strlen(buffer);
+	fwrite(buffer, 1, len, (FILE*)m_fh);
+	fputc('\n', (FILE*)m_fh);
+	m_size += len + 1;
 }
 
 bool s2::file_exists(const char* filename)
