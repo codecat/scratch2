@@ -96,6 +96,16 @@ namespace s2
 			clear_memory();
 		}
 
+		list &operator =(const list &copy)
+		{
+			size_t copylen = copy.len();
+			ensure_memory(copylen);
+			for (size_t i = 0; i < copylen; i++) {
+				add(copy[i]);
+			}
+			return *this;
+		}
+
 		list &operator =(std::initializer_list<T> l)
 		{
 			clear_memory();
