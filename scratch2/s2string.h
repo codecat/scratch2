@@ -293,13 +293,16 @@ s2::string s2::string::replace(const char* find, const char* replace) const
 	s2::string ret(*this);
 	int index = -1;
 	while (true) {
-		index = ret.indexof(find);
-		if (index == -1) {
+		char* p = strstr(ret.m_buffer + index, find);
+		if (p == nullptr) {
 			break;
 		}
+		index = (int)(p - ret.m_buffer);
 
 		ret.remove(index, findlen);
 		ret.insert(replace, index, replacelen);
+
+		index += (int)replacelen;
 	}
 	return ret;
 }
