@@ -291,7 +291,7 @@ s2::string s2::string::replace(const char* find, const char* replace) const
 	size_t replacelen = strlen(replace);
 
 	s2::string ret(*this);
-	int index = -1;
+	int index = 0;
 	while (true) {
 		char* p = strstr(ret.m_buffer + index, find);
 		if (p == nullptr) {
