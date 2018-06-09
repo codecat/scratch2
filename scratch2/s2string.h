@@ -26,6 +26,7 @@ namespace s2
 		~string();
 
 		size_t len() const;
+		size_t allocsize() const;
 		const char* c_str() const;
 
 		int indexof(char c) const;
@@ -35,9 +36,12 @@ namespace s2
 		bool startswith(const char* sz) const;
 		bool endswith(const char* sz) const;
 		stringsplit split(const char* delim, int limit = 0) const;
+		stringsplit commandlinesplit() const;
 
 		string substr(int start) const;
 		string substr(int start, int len) const;
+
+		void append(char c);
 
 		void append(const char* sz);
 		void append(const char* sz, size_t len);
@@ -65,6 +69,9 @@ namespace s2
 		string trim() const;
 		string trim(const char* sz) const;
 
+		string tolower() const;
+		string toupper() const;
+
 		bool operator ==(const char* sz) const;
 		bool operator ==(const string &str) const;
 
@@ -76,10 +83,13 @@ namespace s2
 		char &operator [](int index);
 		const char &operator [](int index) const;
 
-	private:
 		void ensure_memory(size_t size);
+
+	private:
 		void resize_memory(size_t size);
 	};
+
+	bool operator ==(const char* sz, const string &str);
 
 	string operator +(const char* lhs, const string &rhs);
 
@@ -93,6 +103,7 @@ namespace s2
 
 	public:
 		stringsplit(const char* sz, const char* delim, int limit = 0);
+		stringsplit(const char* sz, bool commandLine);
 		~stringsplit();
 
 		size_t len() const;
@@ -110,6 +121,7 @@ namespace s2
 #include <cassert>
 #include <cstdarg>
 #include <cstdio>
+#include <cctype>
 
 const size_t min_buffer_size = 24;
 
@@ -153,6 +165,11 @@ s2::string::~string()
 size_t s2::string::len() const
 {
 	return m_length;
+}
+
+size_t s2::string::allocsize() const
+{
+	return m_allocSize;
 }
 
 const char* s2::string::c_str() const
@@ -201,6 +218,11 @@ s2::stringsplit s2::string::split(const char* delim, int limit) const
 	return stringsplit(m_buffer, delim, limit);
 }
 
+s2::stringsplit s2::string::commandlinesplit() const
+{
+	return stringsplit(m_buffer, true);
+}
+
 s2::string s2::string::substr(int start) const
 {
 	if (m_length == 0) {
@@ -231,6 +253,11 @@ s2::string s2::string::substr(int start, int len) const
 		len = remainder;
 	}
 	return string(m_buffer + start, len);
+}
+
+void s2::string::append(char c)
+{
+	append(&c, 0, 1);
 }
 
 void s2::string::append(const char* sz)
@@ -418,6 +445,28 @@ s2::string s2::string::trim(const char* sz) const
 	return string(p, (pp - p) + 1);
 }
 
+s2::string s2::string::tolower() const
+{
+	s2::string ret = *this;
+	char* p = ret.m_buffer;
+	while (*p != '\0') {
+		*p = ::tolower(*p);
+		p++;
+	}
+	return ret;
+}
+
+s2::string s2::string::toupper() const
+{
+	s2::string ret = *this;
+	char* p = ret.m_buffer;
+	while (*p != '\0') {
+		*p = ::toupper(*p);
+		p++;
+	}
+	return ret;
+}
+
 bool s2::string::operator ==(const char* sz) const
 {
 	return !strcmp(m_buffer, sz);
@@ -467,6 +516,11 @@ void s2::string::resize_memory(size_t size)
 	m_buffer = (char*)realloc(m_buffer, m_allocSize);
 }
 
+bool s2::operator ==(const char* sz, const string &str)
+{
+	return str == sz;
+}
+
 s2::string s2::operator +(const char* lhs, const string &rhs)
 {
 	return string(lhs) += rhs;
@@ -511,6 +565,51 @@ s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
 
 		add(p, pos - p);
 		p = pos + lenDelim;
+	}
+}
+
+s2::stringsplit::stringsplit(const char* sz, bool commandLine)
+{
+	const char* p = sz;
+	s2::string buffer;
+	buffer.ensure_memory(128);
+	bool inString = false;
+
+	char c;
+	do {
+		c = *p;
+		char cn = *(p + 1);
+
+		if (c == '\\') {
+			buffer.append(cn);
+			p++;
+			continue;
+		}
+
+		if (inString) {
+			if (c == '"' && (cn == ' ' || cn == '\0')) {
+				inString = false;
+				continue;
+			}
+
+		} else {
+			if (c == '"' && buffer.len() == 0) {
+				inString = true;
+				continue;
+			}
+
+			if (c == ' ' && buffer.len() != 0) {
+				add(buffer, buffer.len());
+				buffer = "";
+				continue;
+			}
+		}
+
+		buffer.append(c);
+	} while (*(++p) != '\0');
+
+	if (buffer.len() > 0) {
+		add(buffer, buffer.len());
 	}
 }
 
