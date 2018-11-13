@@ -14,6 +14,13 @@ namespace s2
 		append,
 	};
 
+	enum class newlinemode
+	{
+		cr, // \r
+		lf, // \n
+		crlf, // \r\n
+	};
+
 	class file
 	{
 	private:
@@ -22,6 +29,8 @@ namespace s2
 		filemode m_mode;
 		void* m_fh;
 		size_t m_size;
+
+		newlinemode m_newlines = newlinemode::lf;
 
 	private:
 		file(const file &copy);
@@ -44,12 +53,8 @@ namespace s2
 		size_t read(void* buffer, size_t size);
 		size_t write(void* buffer, size_t size);
 
-#if defined(S2_USING_STRING)
-		s2::string readline();
-#else
-		char* readline();
-#endif
-		void writeline(const char* buffer);
+		void writeline();
+		void writeline(const char* str);
 
 		template<typename T>
 		void read(T &o)
@@ -137,7 +142,7 @@ size_t s2::file::size()
 		size_t pos_orig = ftell((FILE*)m_fh);
 		fseek((FILE*)m_fh, 0, SEEK_END);
 		m_size = ftell((FILE*)m_fh);
-		fseek((FILE*)m_fh, pos_orig, SEEK_SET);
+		fseek((FILE*)m_fh, (long)pos_orig, SEEK_SET);
 	}
 
 	return m_size;
@@ -162,7 +167,7 @@ void s2::file::set_pos(size_t pos)
 	if (m_fh == nullptr) {
 		return;
 	}
-	fseek((FILE*)m_fh, pos, SEEK_SET);
+	fseek((FILE*)m_fh, (long)pos, SEEK_SET);
 }
 
 size_t s2::file::pos()
@@ -178,7 +183,7 @@ size_t s2::file::read(void* buffer, size_t size)
 	if (m_fh == nullptr) {
 		return 0;
 	}
-	return fread(buffer, 1, size, (FILE*)m_fh);
+	return fread(buffer, size, 1, (FILE*)m_fh);
 }
 
 size_t s2::file::write(void* buffer, size_t size)
@@ -187,68 +192,24 @@ size_t s2::file::write(void* buffer, size_t size)
 		return 0;
 	}
 	m_size += size;
-	return fwrite(buffer, 1, size, (FILE*)m_fh);
+	return fwrite(buffer, size, 1, (FILE*)m_fh);
 }
 
-#if defined(S2_USING_STRING)
-s2::string s2::file::readline()
-#else
-char* s2::file::readline()
-#endif
+void s2::file::writeline()
 {
-	size_t bufferSize = 128;
-	size_t bufferOffset = 0;
-	char* buffer = (char*)malloc(bufferSize + 1);
-
-	long startPos = ftell((FILE*)m_fh);
-
-	while (true) {
-		size_t bytesRead = fread(buffer + bufferOffset, 1, 128, (FILE*)m_fh);
-		buffer[bytesRead] = '\0';
-
-		if (bytesRead == 0) {
-			// we hit eof early
-			break;
-		}
-
-		char* newline = strchr(buffer, '\n');
-		if (newline != nullptr) {
-			// we found a newline
-			*newline = '\0';
-			if (newline > buffer && *(newline - 1) == '\r') {
-				*(newline - 1) = '\0';
-			}
-			fseek((FILE*)m_fh, startPos + (newline - buffer) + 1, SEEK_SET);
-			break;
-		}
-
-		if (bytesRead < 128) {
-			// we've hit eof and there's no newline
-			break;
-		}
-
-		// we need to read more data
-		bufferSize += 128;
-		bufferOffset += 128;
-		buffer = (char*)realloc(buffer, bufferSize + 1);
+	const char* newline = "\r\n";
+	if (m_newlines == newlinemode::cr) {
+		newline = "\r";
+	} else if (m_newlines == newlinemode::lf) {
+		newline = "\n";
 	}
-
-#if defined(S2_USING_STRING)
-	s2::string ret(buffer);
-	free(buffer);
-	return ret;
-#else
-	return buffer;
-#endif
+	fwrite(newline, strlen(newline), 1, (FILE*)m_fh);
 }
 
-
-void s2::file::writeline(const char* buffer)
+void s2::file::writeline(const char* str)
 {
-	size_t len = strlen(buffer);
-	fwrite(buffer, 1, len, (FILE*)m_fh);
-	fputc('\n', (FILE*)m_fh);
-	m_size += len + 1;
+	fwrite(str, strlen(str), 1, (FILE*)m_fh);
+	writeline();
 }
 
 bool s2::file_exists(const char* filename)
