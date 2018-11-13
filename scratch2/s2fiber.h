@@ -51,6 +51,7 @@ namespace s2
 #else
 #include <cstdlib>
 #include <ucontext.h>
+#include <signal.h>
 #endif
 
 namespace s2
