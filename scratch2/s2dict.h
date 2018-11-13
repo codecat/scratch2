@@ -6,6 +6,10 @@
 #include <cstring>
 #include <new>
 
+#ifndef _MSC_VER
+#include <initializer_list>
+#endif
+
 #ifndef S2_DICT_ALLOC_STEP
 #define S2_DICT_ALLOC_STEP 16
 #endif
@@ -78,10 +82,10 @@ namespace s2
 
 	private:
 		dict_type* m_dict;
-		int m_index;
+		size_t m_index;
 
 	public:
-		dictiterator(dict_type* list, int index)
+		dictiterator(dict_type* list, size_t index)
 		{
 			m_dict = list;
 			m_index = index;
@@ -130,8 +134,17 @@ namespace s2
 		}
 
 		dict(const dict &copy)
+			: dict()
 		{
 			//TODO
+		}
+
+		dict(std::initializer_list<pair> list)
+			: dict()
+		{
+			for (pair p : list) {
+				add(p.m_key, p.m_value);
+			}
 		}
 
 		~dict()
@@ -159,7 +172,7 @@ namespace s2
 		{
 			for (size_t i = 0; i < m_length; i++) {
 				if (m_pairs[i].m_key == key) {
-					return i;
+					return (int)i;
 				}
 			}
 			return -1;
@@ -294,23 +307,6 @@ namespace s2
 			return iterator(this, m_length);
 		}
 
-	private:
-		pair &add_pair(const TKey &key)
-		{
-			ensure_memory(m_length + 1);
-			pair* ret = new (m_pairs + m_length) pair(key);
-			m_length++;
-			return *ret;
-		}
-
-		pair &add_pair(const TKey &key, const TValue &value)
-		{
-			ensure_memory(m_length + 1);
-			pair* ret = new (m_pairs + m_length) pair(key, value);
-			m_length++;
-			return *ret;
-		}
-
 		pair* find_key(const TKey &key) const
 		{
 			for (size_t i = 0; i < m_length; i++) {
@@ -329,6 +325,23 @@ namespace s2
 				}
 			}
 			return nullptr;
+		}
+
+	private:
+		pair &add_pair(const TKey &key)
+		{
+			ensure_memory(m_length + 1);
+			pair* ret = new (m_pairs + m_length) pair(key);
+			m_length++;
+			return *ret;
+		}
+
+		pair &add_pair(const TKey &key, const TValue &value)
+		{
+			ensure_memory(m_length + 1);
+			pair* ret = new (m_pairs + m_length) pair(key, value);
+			m_length++;
+			return *ret;
 		}
 
 		void ensure_memory(size_t count)

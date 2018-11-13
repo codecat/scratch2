@@ -21,10 +21,10 @@ namespace s2
 	{
 	private:
 		LT* m_list;
-		int m_index;
+		size_t m_index;
 
 	public:
-		listiterator(LT* list, int index)
+		listiterator(LT* list, size_t index)
 		{
 			m_list = list;
 			m_index = index;
@@ -94,16 +94,6 @@ namespace s2
 		~list()
 		{
 			clear_memory();
-		}
-
-		list &operator =(const list &copy)
-		{
-			size_t copylen = copy.len();
-			ensure_memory(copylen);
-			for (size_t i = 0; i < copylen; i++) {
-				add(copy[i]);
-			}
-			return *this;
 		}
 
 		list &operator =(std::initializer_list<T> l)
@@ -194,12 +184,12 @@ namespace s2
 			return indexof(o) != -1;
 		}
 
-		T &operator [](int index)
+		T &operator [](size_t index)
 		{
 			return m_buffer[index];
 		}
 
-		const T &operator [](int index) const
+		const T &operator [](size_t index) const
 		{
 			return m_buffer[index];
 		}

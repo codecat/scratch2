@@ -229,7 +229,7 @@ s2::string s2::string::substr(int start) const
 		return "";
 	}
 	while (start < 0) {
-		start += m_length;
+		start += (int)m_length;
 	}
 	if ((size_t)start >= m_length) {
 		return "";
@@ -243,12 +243,12 @@ s2::string s2::string::substr(int start, int len) const
 		return "";
 	}
 	while (start < 0) {
-		start += m_length;
+		start += (int)m_length;
 	}
 	if ((size_t)start >= m_length) {
 		return "";
 	}
-	int remainder = strlen(m_buffer) + start;
+	int remainder = (int)strlen(m_buffer) + start;
 	if (len > remainder) {
 		len = remainder;
 	}
@@ -420,12 +420,11 @@ s2::string s2::string::trim() const
 
 s2::string s2::string::trim(const char* sz) const
 {
-	int num = strlen(sz);
-	if (num == 0) {
+	if (strlen(sz) == 0) {
 		return *this;
 	}
 
-	int len = strlen(m_buffer);
+	int len = (int)strlen(m_buffer);
 	char* p = m_buffer;
 	while (*p != '\0') {
 		if (strchr(sz, *p) == nullptr) {
