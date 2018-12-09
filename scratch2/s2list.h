@@ -7,9 +7,7 @@
 #include <new>
 #include <initializer_list>
 
-#ifndef S2_LIST_ALLOC_STEP
-#define S2_LIST_ALLOC_STEP 16
-#endif
+#include <cstdio>
 
 namespace s2
 {
@@ -262,8 +260,9 @@ namespace s2
 				return;
 			}
 
-			if (count % S2_LIST_ALLOC_STEP > 0) {
-				count += (count % S2_LIST_ALLOC_STEP);
+			size_t resize = m_allocSize + m_allocSize / 2;
+			if (resize < SIZE_MAX && resize > count) {
+				count = resize;
 			}
 
 			m_buffer = (T*)realloc(m_buffer, count * sizeof(T));
