@@ -99,4 +99,18 @@ void test_list()
 	S2_TEST(stack.pop() == 15);
 	S2_TEST(stack.pop() == 10);
 	S2_TEST(stack.top() == 5);
+
+	arr.add(0);
+	arr.add(1);
+	arr.add(2);
+	arr.add(3);
+	arr.insert(1, 100);
+	S2_TEST(arr[0] == 0);
+	S2_TEST(arr[1] == 200);
+	arr.insert(3, 200);
+	S2_TEST(arr[2] == 1);
+	S2_TEST(arr[3] == 200);
+	arr.insert(6, 400);
+	S2_TEST(arr[5] == 3);
+	S2_TEST(arr[6] == 400);
 }

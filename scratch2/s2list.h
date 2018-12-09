@@ -134,6 +134,32 @@ namespace s2
 			return *ret;
 		}
 
+		void insert(int index, const T &o)
+		{
+			if (index == m_length) {
+				add(o);
+				return;
+			}
+
+			ensure_memory(m_length + 1);
+			memmove(m_buffer + index + 1, m_buffer + index, (m_length - index) * sizeof(T));
+			new (m_buffer + index) T(o);
+			m_length++;
+		}
+
+		T &insert(int index)
+		{
+			if (index == m_length) {
+				return add();
+			}
+
+			ensure_memory(m_length + 1);
+			memmove(m_buffer + index + 1, m_buffer + index, (m_length - index) * sizeof(T));
+			T* ret = new (m_buffer + index) T;
+			m_length++;
+			return *ret;
+		}
+
 		void remove(int index)
 		{
 			if (index < 0 || (size_t)index >= m_length) {
