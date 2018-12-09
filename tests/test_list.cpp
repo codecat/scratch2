@@ -106,7 +106,7 @@ void test_list()
 	arr.add(3);
 	arr.insert(1, 100);
 	S2_TEST(arr[0] == 0);
-	S2_TEST(arr[1] == 200);
+	S2_TEST(arr[1] == 100);
 	arr.insert(3, 200);
 	S2_TEST(arr[2] == 1);
 	S2_TEST(arr[3] == 200);
