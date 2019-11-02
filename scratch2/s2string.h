@@ -104,6 +104,7 @@ namespace s2
 	public:
 		stringsplit(const char* sz, const char* delim, int limit = 0);
 		stringsplit(const char* sz, bool commandLine);
+		stringsplit(const stringsplit &copy);
 		~stringsplit();
 
 		size_t len() const;
@@ -609,6 +610,14 @@ s2::stringsplit::stringsplit(const char* sz, bool commandLine)
 
 	if (buffer.len() > 0) {
 		add(buffer, buffer.len());
+	}
+}
+
+s2::stringsplit::stringsplit(const stringsplit &copy)
+{
+	for (size_t i = 0; i < copy.m_length; i++) {
+		const char* s = copy.m_buffer[i];
+		add(s, strlen(s));
 	}
 }
 
