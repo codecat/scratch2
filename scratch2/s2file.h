@@ -32,6 +32,8 @@ namespace s2
 
 		newlinemode m_newlines = newlinemode::lf;
 
+		char* m_lineRead = nullptr;
+
 	private:
 		file(const file &copy);
 
@@ -52,6 +54,8 @@ namespace s2
 
 		size_t read(void* buffer, size_t size);
 		size_t write(void* buffer, size_t size);
+
+		const char* readline();
 
 		void writeline();
 		void writeline(const char* str);
@@ -82,6 +86,11 @@ namespace s2
 }
 
 #ifdef S2_IMPL
+
+#ifndef S2_FILE_READLINE_BUFFERSIZE
+#define S2_FILE_READLINE_BUFFERSIZE 1024
+#endif
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -100,6 +109,10 @@ s2::file::~file()
 	free(m_filename);
 	if (m_fh != nullptr) {
 		fclose((FILE*)m_fh);
+	}
+
+	if (m_lineRead != nullptr) {
+		free(m_lineRead);
 	}
 }
 
@@ -183,7 +196,7 @@ size_t s2::file::read(void* buffer, size_t size)
 	if (m_fh == nullptr) {
 		return 0;
 	}
-	return fread(buffer, size, 1, (FILE*)m_fh);
+	return fread(buffer, 1, size, (FILE*)m_fh);
 }
 
 size_t s2::file::write(void* buffer, size_t size)
@@ -192,7 +205,38 @@ size_t s2::file::write(void* buffer, size_t size)
 		return 0;
 	}
 	m_size += size;
-	return fwrite(buffer, size, 1, (FILE*)m_fh);
+	return fwrite(buffer, 1, size, (FILE*)m_fh);
+}
+
+const char* s2::file::readline()
+{
+	if (m_fh == nullptr) {
+		return nullptr;
+	}
+
+	if (m_lineRead == nullptr) {
+		m_lineRead = (char*)malloc(S2_FILE_READLINE_BUFFERSIZE + 1);
+	}
+
+	if (fgets(m_lineRead, S2_FILE_READLINE_BUFFERSIZE, (FILE*)m_fh) == nullptr) {
+		return nullptr;
+	}
+
+	size_t len = strlen(m_lineRead);
+	if (len > 0) {
+		char &lastChar = m_lineRead[len - 1];
+		if (lastChar == '\n' || lastChar == '\r') {
+			lastChar = '\0';
+		}
+	}
+	if (len > 1) {
+		char &almostLastChar = m_lineRead[len - 2];
+		if (almostLastChar == '\n' || almostLastChar == '\r') {
+			almostLastChar = '\0';
+		}
+	}
+
+	return m_lineRead;
 }
 
 void s2::file::writeline()
