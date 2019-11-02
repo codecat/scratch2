@@ -3,6 +3,7 @@
 #define S2_USING_STRING
 
 #include <cstddef>
+#include <cstdint>
 
 namespace s2
 {
@@ -38,8 +39,8 @@ namespace s2
 		stringsplit split(const char* delim, int limit = 0) const;
 		stringsplit commandlinesplit() const;
 
-		string substr(size_t start) const;
-		string substr(size_t start, size_t len) const;
+		string substr(intptr_t start) const;
+		string substr(intptr_t start, intptr_t len) const;
 
 		void append(char c);
 
@@ -224,32 +225,32 @@ s2::stringsplit s2::string::commandlinesplit() const
 	return stringsplit(m_buffer, true);
 }
 
-s2::string s2::string::substr(size_t start) const
+s2::string s2::string::substr(intptr_t start) const
 {
 	if (m_length == 0) {
 		return "";
 	}
 	while (start < 0) {
-		start += m_length;
+		start += (intptr_t)m_length;
 	}
-	if (start >= m_length) {
+	if ((size_t)start >= m_length) {
 		return "";
 	}
 	return string(m_buffer + start);
 }
 
-s2::string s2::string::substr(size_t start, size_t len) const
+s2::string s2::string::substr(intptr_t start, intptr_t len) const
 {
 	if (m_length == 0) {
 		return "";
 	}
 	while (start < 0) {
-		start += m_length;
+		start += (intptr_t)m_length;
 	}
 	if ((size_t)start >= m_length) {
 		return "";
 	}
-	size_t remainder = strlen(m_buffer) + start;
+	intptr_t remainder = (intptr_t)strlen(m_buffer) + start;
 	if (len > remainder) {
 		len = remainder;
 	}
