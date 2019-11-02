@@ -6,10 +6,6 @@
 #include <cstring>
 #include <new>
 
-#ifndef _MSC_VER
-#include <initializer_list>
-#endif
-
 #ifndef S2_DICT_ALLOC_STEP
 #define S2_DICT_ALLOC_STEP 16
 #endif
@@ -136,14 +132,19 @@ namespace s2
 		dict(const dict &copy)
 			: dict()
 		{
-			//TODO
+			size_t copylen = copy.len();
+			ensure_memory(copylen);
+			for (size_t i = 0; i < copylen; i++) {
+				auto &p = copy.m_pairs[i];
+				add_pair(p.m_key, p.m_value);
+			}
 		}
 
 		dict(std::initializer_list<pair> list)
 			: dict()
 		{
 			for (pair p : list) {
-				add(p.m_key, p.m_value);
+				add_pair(p.m_key, p.m_value);
 			}
 		}
 
@@ -153,6 +154,18 @@ namespace s2
 			if (m_pairs != nullptr) {
 				free(m_pairs);
 			}
+		}
+
+		dict &operator=(const dict &copy)
+		{
+			clear();
+			size_t copylen = copy.len();
+			ensure_memory(copylen);
+			for (size_t i = 0; i < copylen; i++) {
+				auto &p = copy.m_pairs[i];
+				add_pair(p.m_key, p.m_value);
+			}
+			return *this;
 		}
 
 		void clear()
@@ -327,6 +340,34 @@ namespace s2
 			return nullptr;
 		}
 
+		void ensure_memory(size_t count)
+		{
+			if (m_allocSize >= count) {
+				return;
+			}
+
+			if (count % S2_DICT_ALLOC_STEP > 0) {
+				count += (count % S2_DICT_ALLOC_STEP);
+			}
+
+			m_pairs = (pair*)realloc(m_pairs, count * sizeof(pair));
+			m_allocSize = count;
+		}
+
+		template<typename TFunc>
+		void sort(TFunc func)
+		{
+#if defined(_MSC_VER)
+			qsort_s(m_pairs, m_length, sizeof(pair), [](void* context, const void* a, const void* b) {
+				return (*(TFunc*)context)(*(pair*)a, *(pair*)b);
+			}, &func);
+#else
+			qsort_r(m_pairs, m_length, sizeof(pair), [](const void* a, const void* b, void* context) {
+				return (*(TFunc*)context)(*(pair*)a, *(pair*)b);
+			}, &func);
+#endif
+		}
+
 	private:
 		pair &add_pair(const TKey &key)
 		{
@@ -342,20 +383,6 @@ namespace s2
 			pair* ret = new (m_pairs + m_length) pair(key, value);
 			m_length++;
 			return *ret;
-		}
-
-		void ensure_memory(size_t count)
-		{
-			if (m_allocSize >= count) {
-				return;
-			}
-
-			if (count % S2_DICT_ALLOC_STEP > 0) {
-				count += (count % S2_DICT_ALLOC_STEP);
-			}
-
-			m_pairs = (pair*)realloc(m_pairs, count * sizeof(pair));
-			m_allocSize = count;
 		}
 	};
 }
