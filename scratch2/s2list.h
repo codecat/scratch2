@@ -4,11 +4,8 @@
 
 #include <cstdlib>
 #include <cstring>
-#include <cstdint>
 #include <new>
 #include <initializer_list>
-
-#include <cstdio>
 
 namespace s2
 {
@@ -205,7 +202,7 @@ namespace s2
 			return m_buffer[m_length - 1];
 		}
 
-		int indexof(const T &o)
+		int indexof(const T &o) const
 		{
 			for (size_t i = 0; i < m_length; i++) {
 				if (m_buffer[i] == o) {
@@ -215,7 +212,7 @@ namespace s2
 			return -1;
 		}
 
-		bool contains(const T &o)
+		bool contains(const T &o) const
 		{
 			return indexof(o) != -1;
 		}
