@@ -38,8 +38,8 @@ namespace s2
 		stringsplit split(const char* delim, int limit = 0) const;
 		stringsplit commandlinesplit() const;
 
-		string substr(int start) const;
-		string substr(int start, int len) const;
+		string substr(size_t start) const;
+		string substr(size_t start, size_t len) const;
 
 		void append(char c);
 
@@ -224,32 +224,32 @@ s2::stringsplit s2::string::commandlinesplit() const
 	return stringsplit(m_buffer, true);
 }
 
-s2::string s2::string::substr(int start) const
+s2::string s2::string::substr(size_t start) const
 {
 	if (m_length == 0) {
 		return "";
 	}
 	while (start < 0) {
-		start += (int)m_length;
+		start += m_length;
 	}
-	if ((size_t)start >= m_length) {
+	if (start >= m_length) {
 		return "";
 	}
 	return string(m_buffer + start);
 }
 
-s2::string s2::string::substr(int start, int len) const
+s2::string s2::string::substr(size_t start, size_t len) const
 {
 	if (m_length == 0) {
 		return "";
 	}
 	while (start < 0) {
-		start += (int)m_length;
+		start += m_length;
 	}
 	if ((size_t)start >= m_length) {
 		return "";
 	}
-	int remainder = (int)strlen(m_buffer) + start;
+	size_t remainder = strlen(m_buffer) + start;
 	if (len > remainder) {
 		len = remainder;
 	}

@@ -170,13 +170,13 @@ namespace s2
 			return *ret;
 		}
 
-		void remove(int index)
+		void remove(size_t index)
 		{
-			if (index < 0 || (size_t)index >= m_length) {
+			if (index < 0 || index >= m_length) {
 				return;
 			}
 			m_buffer[index].~T();
-			if ((size_t)index < m_length) {
+			if (index < m_length) {
 				//NOTE: This is not safe if there are pointers to the items
 				memmove(m_buffer + index, m_buffer + index + 1, (m_length - index) * sizeof(T));
 			}
