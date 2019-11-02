@@ -55,6 +55,8 @@ namespace s2
 		size_t read(void* buffer, size_t size);
 		size_t write(void* buffer, size_t size);
 
+		void set_newline(newlinemode mode);
+
 		const char* readline();
 
 		void writeline();
@@ -206,6 +208,11 @@ size_t s2::file::write(void* buffer, size_t size)
 	}
 	m_size += size;
 	return fwrite(buffer, 1, size, (FILE*)m_fh);
+}
+
+void s2::file::set_newline(newlinemode mode)
+{
+	m_newlines = mode;
 }
 
 const char* s2::file::readline()
