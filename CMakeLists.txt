@@ -8,6 +8,10 @@ include_directories(
 	scratch2
 )
 
+if (MSVC)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 add_executable(s2tests
 	tests/tests.cpp
 	tests/impl.cpp
