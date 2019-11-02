@@ -4,6 +4,8 @@
 
 #include "structs.h"
 
+#include <cstring>
+
 void test_file()
 {
 	s2::test_group("file");
@@ -63,6 +65,22 @@ void test_file()
 		S2_TEST(bar2.d == bar.d);
 		file.close();
 		S2_TEST(file.get_mode() == s2::filemode::none);
+	}
+
+	{
+		s2::file textFile("test.txt");
+		textFile.open(s2::filemode::write);
+		textFile.writeline("Line 1");
+		textFile.writeline("Line 2");
+		textFile.writeline("Line 3");
+	}
+
+	{
+		s2::file textFile("test.txt");
+		textFile.open(s2::filemode::read);
+		S2_TEST(!strcmp(textFile.readline(), "Line 1"));
+		S2_TEST(!strcmp(textFile.readline(), "Line 2"));
+		S2_TEST(!strcmp(textFile.readline(), "Line 3"));
 	}
 
 	S2_TEST(_numBarInstances == 0);
