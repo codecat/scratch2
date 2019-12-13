@@ -36,7 +36,7 @@ namespace s2
 		TValue &m_value;
 
 	public:
-		fastdictpair(const TKey &key, const TValue &value)
+		fastdictpair(TKey &key, TValue &value)
 			: m_key(key), m_value(value)
 		{
 		}
