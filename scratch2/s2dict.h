@@ -10,6 +10,10 @@
 #define S2_DICT_ALLOC_STEP 16
 #endif
 
+#ifndef S2_DICT_CHECK_FOR_DUPLICATE_KEYS
+#define S2_DICT_CHECK_FOR_DUPLICATE_KEYS 1
+#endif
+
 namespace s2
 {
 	enum class dictexception
@@ -237,17 +241,21 @@ namespace s2
 
 		pair &add(const TKey &key)
 		{
+#if S2_DICT_CHECK_FOR_DUPLICATE_KEYS
 			if (contains_key(key)) {
 				throw dictexception::duplicate_key;
 			}
+#endif
 			return add_pair(key);
 		}
 
 		pair &add(const TKey &key, const TValue &value)
 		{
+#if S2_DICT_CHECK_FOR_DUPLICATE_KEYS
 			if (contains_key(key)) {
 				throw dictexception::duplicate_key;
 			}
+#endif
 			return add_pair(key, value);
 		}
 
