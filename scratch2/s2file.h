@@ -53,7 +53,7 @@ namespace s2
 		size_t pos();
 
 		size_t read(void* buffer, size_t size);
-		size_t write(void* buffer, size_t size);
+		size_t write(const void* buffer, size_t size);
 
 		void set_newline(newlinemode mode);
 
@@ -77,7 +77,7 @@ namespace s2
 		}
 
 		template<typename T>
-		void write(T &o)
+		void write(const T &o)
 		{
 			write(&o, sizeof(T));
 		}
@@ -201,7 +201,7 @@ size_t s2::file::read(void* buffer, size_t size)
 	return fread(buffer, 1, size, (FILE*)m_fh);
 }
 
-size_t s2::file::write(void* buffer, size_t size)
+size_t s2::file::write(const void* buffer, size_t size)
 {
 	if (m_fh == nullptr) {
 		return 0;
