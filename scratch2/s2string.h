@@ -131,8 +131,6 @@ s2::string::string()
 {
 	m_length = 0;
 	m_buffer = nullptr;
-	resize_memory(1);
-	m_buffer[0] = '\0';
 }
 
 s2::string::string(const char* sz)
@@ -161,7 +159,9 @@ s2::string::string(const s2::string &str)
 
 s2::string::~string()
 {
-	free(m_buffer);
+	if (m_buffer != nullptr) {
+		free(m_buffer);
+	}
 }
 
 size_t s2::string::len() const
@@ -176,11 +176,18 @@ size_t s2::string::allocsize() const
 
 const char* s2::string::c_str() const
 {
+	if (m_buffer == nullptr) {
+		return "";
+	}
 	return m_buffer;
 }
 
 int s2::string::indexof(char c) const
 {
+	if (m_buffer == nullptr) {
+		return -1;
+	}
+
 	char* p = m_buffer;
 	while (*p != '\0') {
 		if (*p == c) {
@@ -193,6 +200,10 @@ int s2::string::indexof(char c) const
 
 int s2::string::indexof(const char* sz) const
 {
+	if (m_buffer == nullptr) {
+		return -1;
+	}
+
 	char* p = strstr(m_buffer, sz);
 	if (p == nullptr) {
 		return -1;
@@ -202,16 +213,25 @@ int s2::string::indexof(const char* sz) const
 
 bool s2::string::contains(const char* sz) const
 {
+	if (m_buffer == nullptr) {
+		return false;
+	}
 	return strstr(m_buffer, sz) != nullptr;
 }
 
 bool s2::string::startswith(const char* sz) const
 {
+	if (m_buffer == nullptr) {
+		return false;
+	}
 	return strstr(m_buffer, sz) == m_buffer;
 }
 
 bool s2::string::endswith(const char* sz) const
 {
+	if (m_buffer == nullptr) {
+		return false;
+	}
 	return !strcmp(m_buffer + m_length - strlen(sz), sz);
 }
 
@@ -227,7 +247,7 @@ s2::stringsplit s2::string::commandlinesplit() const
 
 s2::string s2::string::substr(intptr_t start) const
 {
-	if (m_length == 0) {
+	if (m_length == 0 || m_buffer == nullptr) {
 		return "";
 	}
 	while (start < 0) {
@@ -241,7 +261,7 @@ s2::string s2::string::substr(intptr_t start) const
 
 s2::string s2::string::substr(intptr_t start, intptr_t len) const
 {
-	if (m_length == 0) {
+	if (m_length == 0 || m_buffer == nullptr) {
 		return "";
 	}
 	while (start < 0) {
@@ -264,16 +284,25 @@ void s2::string::append(char c)
 
 void s2::string::append(const char* sz)
 {
+	if (sz == nullptr) {
+		return;
+	}
 	append(sz, 0, strlen(sz));
 }
 
 void s2::string::append(const char* sz, size_t len)
 {
+	if (sz == nullptr) {
+		return;
+	}
 	append(sz, 0, len);
 }
 
 void s2::string::append(const char* sz, size_t start, size_t len)
 {
+	if (sz == nullptr) {
+		return;
+	}
 	ensure_memory(m_length + len + 1);
 	memcpy(m_buffer + m_length, sz + start, len);
 	m_length += len;
@@ -296,6 +325,9 @@ void s2::string::insert(const char* sz, size_t pos, size_t len)
 
 void s2::string::remove(size_t pos, size_t len)
 {
+	if (m_buffer == nullptr) {
+		return;
+	}
 	memmove(m_buffer + pos, m_buffer + pos + len, m_length - pos - len);
 	m_length -= len;
 	m_buffer[m_length] = '\0';
@@ -303,6 +335,10 @@ void s2::string::remove(size_t pos, size_t len)
 
 s2::string s2::string::replace(char find, char replace) const
 {
+	if (m_buffer == nullptr) {
+		return *this;
+	}
+
 	s2::string ret(*this);
 	char* p = ret.m_buffer;
 	while (*p != '\0') {
@@ -316,6 +352,10 @@ s2::string s2::string::replace(char find, char replace) const
 
 s2::string s2::string::replace(const char* find, const char* replace) const
 {
+	if (m_buffer == nullptr || find == nullptr || replace == nullptr) {
+		return *this;
+	}
+
 	size_t findlen = strlen(find);
 	size_t replacelen = strlen(replace);
 
@@ -382,10 +422,12 @@ void s2::string::appendf(const char* format, ...)
 
 s2::string &s2::string::operator =(const char* sz)
 {
-	m_length = strlen(sz);
-	ensure_memory(m_length + 1);
-	memcpy(m_buffer, sz, m_length);
-	m_buffer[m_length] = '\0';
+	if (sz != nullptr) {
+		m_length = strlen(sz);
+		ensure_memory(m_length + 1);
+		memcpy(m_buffer, sz, m_length);
+		m_buffer[m_length] = '\0';
+	}
 	return *this;
 }
 
@@ -422,7 +464,7 @@ s2::string s2::string::trim() const
 
 s2::string s2::string::trim(const char* sz) const
 {
-	if (strlen(sz) == 0) {
+	if (m_buffer == nullptr || sz == nullptr || strlen(sz) == 0) {
 		return *this;
 	}
 
@@ -448,6 +490,10 @@ s2::string s2::string::trim(const char* sz) const
 
 s2::string s2::string::tolower() const
 {
+	if (m_buffer == nullptr) {
+		return *this;
+	}
+
 	s2::string ret = *this;
 	char* p = ret.m_buffer;
 	while (*p != '\0') {
@@ -459,6 +505,10 @@ s2::string s2::string::tolower() const
 
 s2::string s2::string::toupper() const
 {
+	if (m_buffer == nullptr) {
+		return *this;
+	}
+
 	s2::string ret = *this;
 	char* p = ret.m_buffer;
 	while (*p != '\0') {
@@ -470,42 +520,59 @@ s2::string s2::string::toupper() const
 
 bool s2::string::operator ==(const char* sz) const
 {
+	if (m_buffer == nullptr) {
+		return sz == nullptr || strlen(sz) == 0;
+	}
 	return !strcmp(m_buffer, sz);
 }
 
 bool s2::string::operator ==(const s2::string &str) const
 {
+	if (m_buffer == nullptr) {
+		return str.m_buffer == nullptr || str.m_length == 0;
+	}
 	return !strcmp(m_buffer, str.m_buffer);
 }
 
 bool s2::string::operator !=(const char* sz) const
 {
-	return !!strcmp(m_buffer, sz);
+	return !(*this == sz);
 }
 
 bool s2::string::operator !=(const string &str) const
 {
-	return !!strcmp(m_buffer, str.m_buffer);
+	return !(*this == str);
 }
 
 s2::string::operator const char*() const
 {
+	if (m_buffer == nullptr) {
+		return "";
+	}
 	return m_buffer;
 }
 
+static char __nullchar = '\0';
+
 char &s2::string::operator [](int index)
 {
+	if (m_buffer == nullptr) {
+		return __nullchar;
+	}
 	return m_buffer[index];
 }
 
 const char &s2::string::operator [](int index) const
 {
+	if (m_buffer == nullptr) {
+		return __nullchar;
+	}
 	return m_buffer[index];
 }
 
 void s2::string::ensure_memory(size_t size)
 {
-	if (m_allocSize >= size) {
+	if (m_buffer != nullptr && m_allocSize >= size) {
 		return;
 	}
 	resize_memory(size);
@@ -552,6 +619,10 @@ s2::string s2::strprintf(const char* format, ...)
 
 s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
 {
+	if (sz == nullptr) {
+		return;
+	}
+
 	const char* p = sz;
 	size_t len = strlen(sz);
 	size_t lenDelim = strlen(delim);
@@ -571,6 +642,10 @@ s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
 
 s2::stringsplit::stringsplit(const char* sz, bool commandLine)
 {
+	if (sz == nullptr) {
+		return;
+	}
+
 	const char* p = sz;
 	s2::string buffer;
 	buffer.ensure_memory(128);
