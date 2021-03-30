@@ -134,7 +134,7 @@ s2::string::string()
 }
 
 s2::string::string(const char* sz)
-	: string(sz, 0, strlen(sz))
+	: string(sz, 0, sz != nullptr ? strlen(sz) : 0)
 {
 }
 
