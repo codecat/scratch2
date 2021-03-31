@@ -34,6 +34,7 @@ namespace s2
 		int indexof(const char* sz) const;
 
 		bool contains(const char* sz) const;
+		bool contains_nocase(const char* sz) const;
 		bool startswith(const char* sz) const;
 		bool endswith(const char* sz) const;
 		stringsplit split(const char* delim, int limit = 0) const;
@@ -219,6 +220,31 @@ bool s2::string::contains(const char* sz) const
 		return false;
 	}
 	return strstr(m_buffer, sz) != nullptr;
+}
+
+bool s2::string::contains_nocase(const char* sz) const
+{
+	if (m_buffer == nullptr) {
+		return false;
+	}
+
+	size_t matched = 0;
+	for (size_t i = 0; i < m_length; i++) {
+		char c = ::tolower(m_buffer[i]);
+		char ec = ::tolower(sz[matched]);
+		if (ec == '\0') {
+			return true;
+		} else if (c == ec) {
+			if (sz[matched + 1] == '\0') {
+				return true;
+			}
+			matched++;
+		} else {
+			matched = 0;
+		}
+	}
+
+	return false;
 }
 
 bool s2::string::startswith(const char* sz) const

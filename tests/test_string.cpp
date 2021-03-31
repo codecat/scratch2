@@ -29,6 +29,10 @@ void test_string()
 	S2_TEST(str.contains("world"));
 	S2_TEST(!str.contains("WORLD"));
 
+	S2_TEST(str.contains_nocase("hello"));
+	S2_TEST(str.contains_nocase("WORLD"));
+	S2_TEST(!str.contains_nocase("earth"));
+
 	S2_TEST(str.startswith("Hello"));
 	S2_TEST(!str.startswith("world"));
 	S2_TEST(str.startswith("Hello world"));
