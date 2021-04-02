@@ -1,4 +1,3 @@
-#define private public
 #include <s2string.h>
 
 #include <s2test.h>
@@ -8,12 +7,10 @@ void test_string()
 	s2::test_group("string");
 
 	s2::string strEmpty;
-	S2_TEST(strEmpty.m_buffer == nullptr);
 	S2_TEST(strEmpty.c_str() != nullptr);
 	S2_TEST(strEmpty.len() == 0);
 
 	strEmpty = "";
-	S2_TEST(strEmpty.m_buffer != nullptr);
 	S2_TEST(strEmpty.c_str() != nullptr);
 	S2_TEST(strEmpty.len() == 0);
 
@@ -31,6 +28,10 @@ void test_string()
 
 	S2_TEST(str.contains("world"));
 	S2_TEST(!str.contains("WORLD"));
+
+	S2_TEST(str.contains_nocase("hello"));
+	S2_TEST(str.contains_nocase("WORLD"));
+	S2_TEST(!str.contains_nocase("earth"));
 
 	S2_TEST(str.startswith("Hello"));
 	S2_TEST(!str.startswith("world"));
