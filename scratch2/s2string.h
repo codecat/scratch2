@@ -29,6 +29,7 @@ namespace s2
 		size_t len() const;
 		size_t allocsize() const;
 		const char* c_str() const;
+		bool is_null() const;
 
 		int indexof(char c) const;
 		int indexof(const char* sz) const;
@@ -180,6 +181,11 @@ const char* s2::string::c_str() const
 		return "";
 	}
 	return m_buffer;
+}
+
+bool s2::string::is_null() const
+{
+	return m_buffer == nullptr;
 }
 
 int s2::string::indexof(char c) const
