@@ -456,7 +456,12 @@ void s2::string::appendf(const char* format, ...)
 
 s2::string &s2::string::operator =(const char* sz)
 {
-	if (sz != nullptr) {
+	if (sz == nullptr) {
+		if (m_buffer != nullptr) {
+			m_buffer[0] = '\0';
+		}
+		m_length = 0;
+	} else {
 		m_length = strlen(sz);
 		ensure_memory(m_length + 1);
 		memcpy(m_buffer, sz, m_length);
