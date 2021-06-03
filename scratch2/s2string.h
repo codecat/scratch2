@@ -33,6 +33,8 @@ namespace s2
 
 		int indexof(char c) const;
 		int indexof(const char* sz) const;
+		int lastindexof(char c) const;
+		int lastindexof(const char* sz) const;
 
 		bool contains(const char* sz) const;
 		bool contains_nocase(const char* sz) const;
@@ -218,6 +220,34 @@ int s2::string::indexof(const char* sz) const
 		return -1;
 	}
 	return (int)(p - m_buffer);
+}
+
+int s2::string::lastindexof(char c) const
+{
+	char* p = m_buffer + m_length;
+	while (p != m_buffer) {
+		p--;
+		if (*p == c) {
+			return (int)(p - m_buffer);
+		}
+	}
+	return -1;
+}
+
+int s2::string::lastindexof(const char* sz) const
+{
+	char* lp = strstr(m_buffer, sz);
+	char* p = lp;
+	while (p != nullptr) {
+		p = strstr(p + 1, sz);
+		if (p != nullptr) {
+			lp = p;
+		}
+	}
+	if (lp == nullptr) {
+		return -1;
+	}
+	return (int)(lp - m_buffer);
 }
 
 bool s2::string::contains(const char* sz) const
