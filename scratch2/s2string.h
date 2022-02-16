@@ -706,6 +706,10 @@ s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
 
 		add(p, pos - p);
 		p = pos + lenDelim;
+
+		if (*p == '\0') {
+			add(p, 0);
+		}
 	}
 }
 

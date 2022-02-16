@@ -68,6 +68,10 @@ void test_string()
 	S2_TEST(parse2[0] == "this");
 	S2_TEST(parse2[1] == "is a test");
 
+	s2::stringsplit parse3("a;b;c;", ";");
+	S2_TEST(parse3.len() == 4);
+	S2_TEST(parse3[3] == "");
+
 	str = "   \t\t foo\tbar\n\n  \r\n";
 	S2_TEST(str.trim() == "foo\tbar");
 	str = "   \t\t foo\tbar";
