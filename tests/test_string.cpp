@@ -72,6 +72,11 @@ void test_string()
 	S2_TEST(parse3.len() == 4);
 	S2_TEST(parse3[3] == "");
 
+	s2::stringsplit parse4(";a;b;c", ";");
+	S2_TEST(parse4.len() == 4);
+	S2_TEST(parse4[0] == "");
+	S2_TEST(parse4[3] == "c");
+
 	str = "   \t\t foo\tbar\n\n  \r\n";
 	S2_TEST(str.trim() == "foo\tbar");
 	str = "   \t\t foo\tbar";
