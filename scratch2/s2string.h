@@ -263,6 +263,10 @@ int s2::string::indexof(const char* sz) const
 
 int s2::string::lastindexof(char c) const
 {
+	if (m_buffer == nullptr) {
+		return -1;
+	}
+
 	char* p = m_buffer + m_length;
 	while (p != m_buffer) {
 		p--;
@@ -275,6 +279,10 @@ int s2::string::lastindexof(char c) const
 
 int s2::string::lastindexof(const char* sz) const
 {
+	if (m_buffer == nullptr) {
+		return -1;
+	}
+
 	char* lp = strstr(m_buffer, sz);
 	char* p = lp;
 	while (p != nullptr) {
@@ -628,6 +636,9 @@ s2::string s2::string::toupper() const
 
 bool s2::string::operator ==(const char* sz) const
 {
+	if (m_buffer == sz) {
+		return true;
+	}
 	if (m_buffer == nullptr) {
 		return sz == nullptr || strlen(sz) == 0;
 	}
@@ -636,10 +647,7 @@ bool s2::string::operator ==(const char* sz) const
 
 bool s2::string::operator ==(const s2::string &str) const
 {
-	if (m_buffer == nullptr) {
-		return str.m_buffer == nullptr || str.m_length == 0;
-	}
-	return !strcmp(m_buffer, str.m_buffer);
+	return (*this == str.m_buffer);
 }
 
 bool s2::string::operator !=(const char* sz) const
