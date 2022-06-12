@@ -93,13 +93,7 @@ namespace s2
 
 		hashtable(const hashtable& other)
 		{
-			m_length = other.m_length;
-			if (m_length > 0) {
-				ensure_memory(m_length);
-			}
-			for (size_t i = 0; i < m_length; i++) {
-				m_entries[i] = other.m_entries[i];
-			}
+			*this = other;
 		}
 
 		~hashtable()
@@ -108,6 +102,26 @@ namespace s2
 			if (m_entries != nullptr) {
 				free(m_entries);
 			}
+		}
+
+		hashtable& operator =(const hashtable& other)
+		{
+			clear();
+			if (m_entries != nullptr) {
+				free(m_entries);
+				m_entries = nullptr;
+				m_allocSize = 0;
+			}
+
+			m_length = other.m_length;
+			if (m_length > 0) {
+				ensure_memory(m_length);
+				for (size_t i = 0; i < m_length; i++) {
+					new (m_entries + i) entry(other.m_entries[i]);
+				}
+			}
+
+			return *this;
 		}
 
 		void clear()
