@@ -78,6 +78,14 @@ namespace s2
 		string tolower() const;
 		string toupper() const;
 
+		int as_int() const;
+		int64_t as_large_int() const;
+		uint32_t as_uint() const;
+		uint64_t as_large_uint() const;
+		float as_float() const;
+		double as_double() const;
+		bool as_bool() const;
+
 		bool operator ==(const char* sz) const;
 		bool operator ==(const string &str) const;
 
@@ -638,6 +646,63 @@ s2::string s2::string::toupper() const
 		p++;
 	}
 	return ret;
+}
+
+int s2::string::as_int() const
+{
+	if (m_buffer == nullptr) {
+		return 0;
+	}
+	return atoi(m_buffer);
+}
+
+int64_t s2::string::as_large_int() const
+{
+	if (m_buffer == nullptr) {
+		return 0;
+	}
+	return (int64_t)atoll(m_buffer);
+}
+
+uint32_t s2::string::as_uint() const
+{
+	if (m_buffer == nullptr) {
+		return 0;
+	}
+	return (uint32_t)strtoul(m_buffer, nullptr, 10);
+}
+
+uint64_t s2::string::as_large_uint() const
+{
+	if (m_buffer == nullptr) {
+		return 0;
+	}
+	return (uint64_t)strtoull(m_buffer, nullptr, 10);
+}
+
+float s2::string::as_float() const
+{
+	if (m_buffer == nullptr) {
+		return 0;
+	}
+	return (float)atof(m_buffer);
+}
+
+double s2::string::as_double() const
+{
+	if (m_buffer == nullptr) {
+		return 0;
+	}
+	return atof(m_buffer);
+}
+
+bool s2::string::as_bool() const
+{
+	if (m_buffer == nullptr) {
+		return false;
+	}
+	char c = m_buffer[0];
+	return c == 't' || c == 'T' || c == 'y' || c == 'Y' || c == '1';
 }
 
 bool s2::string::operator ==(const char* sz) const

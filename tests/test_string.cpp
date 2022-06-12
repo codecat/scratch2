@@ -143,4 +143,13 @@ void test_string()
 	str = str.replace("foooo", "b");
 	S2_TEST(str == "b");
 	S2_TEST(str.len() == 1);
+
+	str = "12.3";
+	S2_TEST(str.as_int() == 12);
+	S2_TEST(str.as_large_int() == 12);
+	S2_TEST(str.as_uint() == 12);
+	S2_TEST(str.as_large_uint() == 12);
+	S2_TEST(str.as_float() == 12.3f);
+	S2_TEST(str.as_double() == 12.3);
+	S2_TEST(str.as_bool() == true);
 }
