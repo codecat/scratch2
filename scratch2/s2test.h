@@ -13,6 +13,24 @@ namespace s2
 }
 
 #define S2_TEST(condition) s2::test_test((condition), #condition, __FILE__, __LINE__)
+#define S2_TEST_MUST_THROW(code, ex) { \
+	bool __caught = false; \
+	try { \
+		code; \
+	} catch (ex) { \
+		__caught = true; \
+	} \
+	s2::test_test(__caught, #code " must throw", __FILE__, __LINE__); \
+}
+#define S2_TEST_MUST_THROW_AND_EQUAL(code, ex, exeq) { \
+	bool __caught = false; \
+	try { \
+		code; \
+	} catch (ex __ex) { \
+		__caught = (__ex == (exeq)); \
+	} \
+	s2::test_test(__caught, #code " must throw " #exeq, __FILE__, __LINE__); \
+}
 
 #ifdef S2_IMPL
 #include <cstdio>
