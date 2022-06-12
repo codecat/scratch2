@@ -26,26 +26,29 @@ namespace s2
 	private:
 		char* m_filename;
 
-		filemode m_mode;
+		filemode m_mode = filemode::none;
 		void* m_fh;
 		size_t m_size;
 
 		newlinemode m_newlines = newlinemode::lf;
 
-		char* m_lineRead = nullptr;
+		char* m_readData = nullptr;
 
 	private:
 		file(const file &copy);
 
 	public:
+		file();
 		file(const char* filename);
 		~file();
 
+		void open(const char* filename, filemode mode);
 		void open(filemode mode);
 		void close();
 
 		size_t size();
 		bool eof();
+		void flush();
 
 		filemode get_mode();
 
@@ -58,6 +61,7 @@ namespace s2
 		void set_newline(newlinemode mode);
 
 		const char* readline();
+		const char* readtoend(size_t* out_size = nullptr);
 
 		void writeline();
 		void writeline(const char* str);
@@ -97,42 +101,123 @@ namespace s2
 #include <cstdlib>
 #include <cstring>
 
-s2::file::file(const char* filename)
+#if defined(_MSC_VER)
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <Windows.h>
+
+class ToWide
 {
-	m_filename = (char*)malloc(strlen(filename) + 1);
-	strcpy(m_filename, filename);
+private:
+	wchar_t* m_buffer;
+
+public:
+	ToWide(const char* src)
+	{
+		int size = MultiByteToWideChar(CP_UTF8, 0, src, -1, 0, 0);
+		m_buffer = (wchar_t*)malloc(size * sizeof(wchar_t));
+		MultiByteToWideChar(CP_UTF8, 0, src, -1, m_buffer, size);
+	}
+	~ToWide() { free(m_buffer); }
+	operator const wchar_t* () { return m_buffer; }
+	wchar_t* buffer() { return m_buffer; }
+};
+
+class ToUtf8
+{
+private:
+	char* m_buffer;
+
+public:
+	ToUtf8(const wchar_t* src)
+	{
+		int size = WideCharToMultiByte(CP_UTF8, 0, src, -1, 0, 0, 0, 0);
+		m_buffer = (char*)malloc(size * sizeof(char));
+		WideCharToMultiByte(CP_UTF8, 0, src, -1, m_buffer, size, 0, 0);
+	}
+	~ToUtf8() { free(m_buffer); }
+	operator const char* () { return m_buffer; }
+	char* buffer() { return m_buffer; }
+};
+#endif
+
+s2::file::file()
+{
+	m_filename = nullptr;
 
 	m_fh = nullptr;
 	m_size = 0;
 }
 
+s2::file::file(const char* filename)
+	: file()
+{
+	m_filename = (char*)malloc(strlen(filename) + 1);
+	strcpy(m_filename, filename);
+}
+
 s2::file::~file()
 {
-	free(m_filename);
+	if (m_filename != nullptr) {
+		free(m_filename);
+	}
 	if (m_fh != nullptr) {
 		fclose((FILE*)m_fh);
 	}
 
-	if (m_lineRead != nullptr) {
-		free(m_lineRead);
+	if (m_readData != nullptr) {
+		free(m_readData);
 	}
+}
+
+void s2::file::open(const char* filename, s2::filemode mode)
+{
+	if (m_filename != nullptr) {
+		free(m_filename);
+	}
+
+	m_filename = (char*)malloc(strlen(filename) + 1);
+	strcpy(m_filename, filename);
+
+	open(mode);
 }
 
 void s2::file::open(s2::filemode mode)
 {
-	const char* openmode = "";
-	if (mode == s2::filemode::read) {
-		openmode = "rb";
-	} else if (mode == s2::filemode::write) {
-		openmode = "wb";
-	} else if (mode == s2::filemode::append) {
-		openmode = "ab";
-	} else {
+	if (m_filename == nullptr) {
+		return;
+	}
+
+#if defined(_MSC_VER)
+	const wchar_t* openmode;
+	switch (mode) {
+	case s2::filemode::read: openmode = L"rb"; break;
+	case s2::filemode::write: openmode = L"wb"; break;
+	case s2::filemode::append: openmode = L"ab"; break;
+	default: return;
+	}
+#else
+	const char* openmode;
+	switch (mode) {
+	case s2::filemode::read: openmode = "rb"; break;
+	case s2::filemode::write: openmode = "wb"; break;
+	case s2::filemode::append: openmode = "ab"; break;
+	default: return;
+	}
+#endif
+
+#if defined(_MSC_VER)
+	m_fh = _wfopen(ToWide(m_filename), openmode);
+#else
+	m_fh = fopen(m_filename, openmode);
+#endif
+	if (m_fh == nullptr) {
+		m_mode = s2::filemode::none;
 		return;
 	}
 
 	m_mode = mode;
-	m_fh = fopen(m_filename, openmode);
 	m_size = size();
 }
 
@@ -170,6 +255,14 @@ bool s2::file::eof()
 	}
 	size_t pos = ftell((FILE*)m_fh);
 	return pos >= m_size;
+}
+
+void s2::file::flush()
+{
+	if (m_fh == nullptr) {
+		return;
+	}
+	fflush((FILE*)m_fh);
 }
 
 s2::filemode s2::file::get_mode()
@@ -218,36 +311,63 @@ void s2::file::set_newline(newlinemode mode)
 const char* s2::file::readline()
 {
 	if (m_fh == nullptr) {
-		return nullptr;
+		return "";
 	}
 
-	if (m_lineRead == nullptr) {
-		m_lineRead = (char*)malloc(S2_FILE_READLINE_BUFFERSIZE + 1);
+	if (m_readData == nullptr) {
+		m_readData = (char*)malloc(S2_FILE_READLINE_BUFFERSIZE + 1);
 	}
 
-	if (fgets(m_lineRead, S2_FILE_READLINE_BUFFERSIZE, (FILE*)m_fh) == nullptr) {
-		return nullptr;
+	if (fgets(m_readData, S2_FILE_READLINE_BUFFERSIZE, (FILE*)m_fh) == nullptr) {
+		return "";
 	}
 
-	size_t len = strlen(m_lineRead);
+	size_t len = strlen(m_readData);
 	if (len > 0) {
-		char &lastChar = m_lineRead[len - 1];
+		char &lastChar = m_readData[len - 1];
 		if (lastChar == '\n' || lastChar == '\r') {
 			lastChar = '\0';
 		}
 	}
 	if (len > 1) {
-		char &almostLastChar = m_lineRead[len - 2];
+		char &almostLastChar = m_readData[len - 2];
 		if (almostLastChar == '\n' || almostLastChar == '\r') {
 			almostLastChar = '\0';
 		}
 	}
 
-	return m_lineRead;
+	return m_readData;
+}
+
+const char* s2::file::readtoend(size_t* out_size)
+{
+	if (m_fh == nullptr) {
+		return nullptr;
+	}
+
+	if (m_readData != nullptr) {
+		free(m_readData);
+	}
+
+	size_t readsize = size() - pos();
+	m_readData = (char*)malloc(readsize + 1);
+	m_readData[readsize] = '\0';
+
+	read(m_readData, readsize);
+
+	if (out_size != nullptr) {
+		*out_size = readsize;
+	}
+
+	return m_readData;
 }
 
 void s2::file::writeline()
 {
+	if (m_fh == nullptr) {
+		return;
+	}
+
 	const char* newline = "\r\n";
 	if (m_newlines == newlinemode::cr) {
 		newline = "\r";
@@ -259,13 +379,24 @@ void s2::file::writeline()
 
 void s2::file::writeline(const char* str)
 {
-	fwrite(str, strlen(str), 1, (FILE*)m_fh);
+	if (m_fh == nullptr) {
+		return;
+	}
+
+	size_t len = strlen(str);
+	if (len > 0) {
+		fwrite(str, len, 1, (FILE*)m_fh);
+	}
 	writeline();
 }
 
 bool s2::file_exists(const char* filename)
 {
+#if defined(_MSC_VER)
+	FILE* fh = _wfopen(ToWide(filename), L"rb");
+#else
 	FILE* fh = fopen(filename, "rb");
+#endif
 	if (fh == nullptr) {
 		return false;
 	}
@@ -275,7 +406,11 @@ bool s2::file_exists(const char* filename)
 
 size_t s2::file_size(const char* filename)
 {
+#if defined(_MSC_VER)
+	FILE* fh = _wfopen(ToWide(filename), L"rb");
+#else
 	FILE* fh = fopen(filename, "rb");
+#endif
 	if (fh == nullptr) {
 		return 0;
 	}
