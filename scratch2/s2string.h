@@ -4,6 +4,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 
 namespace s2
 {
@@ -118,6 +119,37 @@ namespace s2
 	private:
 		void add(const char* sz, size_t len);
 	};
+
+#if defined(_MSC_VER)
+	class str_to_wide
+	{
+	private:
+		wchar_t* m_buffer;
+		int m_size;
+
+	public:
+		str_to_wide(const char* src);
+		inline ~str_to_wide() { free(m_buffer); }
+		inline operator const wchar_t* () { return m_buffer; }
+		inline wchar_t* buffer() { return m_buffer; }
+		inline int size() { return m_size; }
+	};
+
+	class str_to_utf8
+	{
+	private:
+		char* m_buffer;
+		int m_size;
+
+	public:
+		str_to_utf8(const wchar_t* src);
+		inline ~str_to_utf8() { free(m_buffer); }
+		inline operator const char* () { return m_buffer; }
+		inline char* buffer() { return m_buffer; }
+		inline int size() { return m_size; }
+		inline operator s2::string() { return s2::string(m_buffer); }
+	};
+#endif
 }
 
 #ifdef S2_IMPL
@@ -128,6 +160,13 @@ namespace s2
 #include <cstdarg>
 #include <cstdio>
 #include <cctype>
+
+#if defined(_MSC_VER)
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <Windows.h>
+#endif
 
 const size_t min_buffer_size = 24;
 
@@ -802,4 +841,20 @@ void s2::stringsplit::add(const char* sz, size_t len)
 	p[len] = '\0';
 	m_buffer[m_length - 1] = p;
 }
+
+#if defined(_MSC_VER)
+s2::str_to_wide::str_to_wide(const char* src)
+{
+	m_size = MultiByteToWideChar(CP_UTF8, 0, src, -1, 0, 0);
+	m_buffer = (wchar_t*)malloc(m_size * sizeof(wchar_t));
+	MultiByteToWideChar(CP_UTF8, 0, src, -1, m_buffer, m_size);
+}
+
+s2::str_to_utf8::str_to_utf8(const wchar_t* src)
+{
+	m_size = WideCharToMultiByte(CP_UTF8, 0, src, -1, 0, 0, 0, 0);
+	m_buffer = (char*)malloc(m_size * sizeof(char));
+	WideCharToMultiByte(CP_UTF8, 0, src, -1, m_buffer, m_size, 0, 0);
+}
+#endif
 #endif
