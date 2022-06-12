@@ -713,6 +713,9 @@ bool s2::string::operator ==(const char* sz) const
 	if (m_buffer == nullptr) {
 		return sz == nullptr || strlen(sz) == 0;
 	}
+	if (m_buffer != nullptr && sz == nullptr) {
+		return false;
+	}
 	return !strcmp(m_buffer, sz);
 }
 
