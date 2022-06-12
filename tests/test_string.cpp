@@ -9,6 +9,11 @@ void test_string()
 	s2::string strEmpty;
 	S2_TEST(strEmpty.c_str() != nullptr);
 	S2_TEST(strEmpty.len() == 0);
+	S2_TEST(strEmpty.indexof('a') == -1);
+	S2_TEST(strEmpty.lastindexof('a') == -1);
+	S2_TEST(strEmpty == "");
+	S2_TEST(strEmpty == nullptr);
+	S2_TEST(strEmpty == strEmpty);
 
 	strEmpty = "";
 	S2_TEST(strEmpty.c_str() != nullptr);
