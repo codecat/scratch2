@@ -736,7 +736,7 @@ s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
 	size_t lenDelim = strlen(delim);
 
 	// Don't allow empty delimiters
-	if (len == 0) {
+	if (lenDelim == 0) {
 		return;
 	}
 
