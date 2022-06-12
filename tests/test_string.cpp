@@ -14,12 +14,23 @@ void test_string()
 	S2_TEST(strEmpty == "");
 	S2_TEST(strEmpty == nullptr);
 	S2_TEST(strEmpty == strEmpty);
+	S2_TEST(strEmpty.is_null());
 
 	strEmpty = "";
 	S2_TEST(strEmpty.c_str() != nullptr);
 	S2_TEST(strEmpty.len() == 0);
+	S2_TEST(strEmpty.is_null());
+
+	strEmpty = "hi";
+	strEmpty = "";
+	S2_TEST(strEmpty.len() == 0);
+	S2_TEST(strEmpty == "");
+	S2_TEST(strEmpty.indexof('a') == -1);
+	S2_TEST(strEmpty.lastindexof('a') == -1);
+	S2_TEST(!strEmpty.is_null());
 
 	s2::string str = "Hello";
+	S2_TEST(!str.is_null());
 	S2_TEST(str == "Hello");
 	S2_TEST(str[0] == 'H');
 	str[4] = '!';

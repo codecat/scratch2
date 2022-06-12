@@ -540,9 +540,15 @@ s2::string &s2::string::operator =(const char* sz)
 		m_length = 0;
 	} else {
 		m_length = strlen(sz);
-		ensure_memory(m_length + 1);
-		memcpy(m_buffer, sz, m_length);
-		m_buffer[m_length] = '\0';
+		if (m_length == 0) {
+			if (m_buffer != nullptr) {
+				m_buffer[0] = '\0';
+			}
+		} else {
+			ensure_memory(m_length + 1);
+			memcpy(m_buffer, sz, m_length);
+			m_buffer[m_length] = '\0';
+		}
 	}
 	return *this;
 }
