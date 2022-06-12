@@ -39,6 +39,7 @@ namespace s2
 		struct entry
 		{
 			uint64_t hash;
+			TKey key;
 			TValue value;
 		};
 
@@ -128,6 +129,7 @@ namespace s2
 			entry* ret = new (m_entries + m_length) entry;
 			m_length++;
 			ret->hash = THasher::hash(key);
+			ret->key = key;
 			return ret->value;
 		}
 
@@ -182,6 +184,7 @@ namespace s2
 			entry* ret = new (m_entries + newIndex) entry;
 			m_length++;
 			ret->hash = keyhash;
+			ret->key = key;
 
 			if (newIndex > 0 && keyhash <= m_entries[newIndex - 1].hash) {
 				throw hashtableexception::unstable;
