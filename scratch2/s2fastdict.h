@@ -230,6 +230,38 @@ namespace s2
 			return pair(m_keys[index], m_values[index]);
 		}
 
+		TKey& get_key_at(size_t index)
+		{
+			if (index >= m_length) {
+				throw fastdictexception::index_out_of_range;
+			}
+			return m_keys[index];
+		}
+
+		const TKey& get_key_at(size_t index) const
+		{
+			if (index >= m_length) {
+				throw fastdictexception::index_out_of_range;
+			}
+			return m_keys[index];
+		}
+
+		TValue& get_value_at(size_t index)
+		{
+			if (index >= m_length) {
+				throw fastdictexception::index_out_of_range;
+			}
+			return m_values[index];
+		}
+
+		const TValue& get_value_at(size_t index) const
+		{
+			if (index >= m_length) {
+				throw fastdictexception::index_out_of_range;
+			}
+			return m_values[index];
+		}
+
 		void add(const TKey &key)
 		{
 #if S2_DICT_CHECK_FOR_DUPLICATE_KEYS
@@ -275,7 +307,7 @@ namespace s2
 				throw fastdictexception::index_out_of_range;
 			}
 			m_keys[index].~TKey();
-			m_values[index].~TKey();
+			m_values[index].~TValue();
 			if (index != m_length - 1) {
 				memmove(m_keys + index, m_keys + index + 1, (m_length - index - 1) * sizeof(TKey));
 				memmove(m_values + index, m_values + index + 1, (m_length - index - 1) * sizeof(TValue));
@@ -388,7 +420,7 @@ namespace s2
 		size_t add_pair(const TKey &key)
 		{
 			ensure_memory(m_length + 1);
-			int newIndex = m_length;
+			size_t newIndex = m_length;
 			new (m_keys + newIndex) TKey(key);
 			new (m_values + newIndex) TValue;
 			m_length++;
