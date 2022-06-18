@@ -38,6 +38,8 @@ namespace s2
 		~ref()
 		{
 			release();
+			m_ptr = nullptr;
+			m_count = nullptr;
 		}
 
 		int count() const
@@ -113,7 +115,9 @@ namespace s2
 			return *m_ptr;
 		}
 
+#if !defined(S2_REF_PUBLIC_MANUAL_COUNTING)
 	private:
+#endif
 		void addref()
 		{
 			if (m_count == nullptr) {
@@ -133,9 +137,6 @@ namespace s2
 				delete m_ptr;
 				delete m_count;
 			}
-
-			m_ptr = nullptr;
-			m_count = nullptr;
 		}
 	};
 }
