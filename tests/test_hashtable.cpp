@@ -9,6 +9,12 @@ void test_hashtable()
 {
 	s2::test_group("hashtable");
 
+	{
+		s2::hashtable<const char*, int64_t> test;
+		test.set("id", 0);
+		test.set("name", 1);
+	}
+
 	s2::hashtable<s2::string, s2::string> dict;
 	S2_TEST(dict.len() == 0);
 	S2_TEST(dict.index_of("foo") == -1);

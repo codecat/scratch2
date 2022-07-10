@@ -224,6 +224,7 @@ namespace s2
 			int index = index_of(key);
 			if (index == -1) {
 				add(key) = value;
+				return;
 			}
 			m_entries[index].value = value;
 		}
