@@ -195,10 +195,7 @@ namespace s2
 				}
 			}
 
-			entry* ret = new (m_entries + newIndex) entry;
 			m_length++;
-			ret->hash = keyhash;
-			ret->key = key;
 
 			if (newIndex > 0 && keyhash <= m_entries[newIndex - 1].hash) {
 				throw hashtableexception::unstable;
@@ -207,6 +204,9 @@ namespace s2
 				throw hashtableexception::unstable;
 			}
 
+			entry* ret = new (m_entries + newIndex) entry;
+			ret->hash = keyhash;
+			ret->key = key;
 			return ret->value;
 		}
 
