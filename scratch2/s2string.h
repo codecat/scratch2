@@ -5,10 +5,12 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <cstring>
 
 namespace s2
 {
 	class stringsplit;
+	class stringview;
 
 	class string
 	{
@@ -128,6 +130,56 @@ namespace s2
 		void add(const char* sz, size_t len);
 	};
 
+	class stringview
+	{
+	private:
+		const char* m_str;
+		size_t m_len;
+
+	public:
+		inline stringview()
+		{
+			m_str = "";
+			m_len = 0;
+		}
+
+		inline stringview(const char* str)
+		{
+			m_str = str;
+			m_len = strlen(str);
+		}
+
+		inline stringview(const char* str, size_t len)
+		{
+			m_str = str;
+			m_len = len;
+		}
+
+		inline stringview(const string& str)
+		{
+			m_str = str.c_str();
+			m_len = str.len();
+		}
+
+		inline stringview(const stringview& other)
+		{
+			m_str = other.m_str;
+			m_len = other.m_len;
+		}
+
+		inline void operator=(const stringview& other)
+		{
+			m_str = other.m_str;
+			m_len = other.m_len;
+		}
+
+		inline operator const char* () const { return m_str; }
+		inline size_t len() const { return m_len; }
+
+		inline bool operator==(const char* str) const { return !strcmp(m_str, str); }
+		inline bool operator!=(const char* str) const { return !!strcmp(m_str, str); }
+	};
+
 #if defined(_MSC_VER)
 	class str_to_wide
 	{
@@ -162,7 +214,6 @@ namespace s2
 
 #ifdef S2_IMPL
 #include <cstdlib>
-#include <cstring>
 #include <cstdint>
 #include <cassert>
 #include <cstdarg>
