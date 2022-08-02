@@ -133,6 +133,13 @@ namespace s2
 			m_length++;
 		}
 
+		void add(T&& o)
+		{
+			ensure_memory(m_length + 1);
+			new (m_buffer + m_length) T(o);
+			m_length++;
+		}
+
 		T &add()
 		{
 			ensure_memory(m_length + 1);
