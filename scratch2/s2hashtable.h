@@ -32,54 +32,70 @@ namespace s2
 		static uint64_t hash(double key);
 	};
 
+	template<typename TKey, typename TValue, typename THasher>
+	class hashtable_entry
+	{
+	private:
+		uint64_t m_hash;
+		TKey m_key;
+		TValue m_value;
+
+	public:
+		inline uint64_t& hash() { return m_hash; }
+		inline TKey& key() { return m_key; }
+		inline TValue& value() { return m_value; }
+
+		inline const uint64_t& hash() const { return m_hash; }
+		inline const TKey& key() const { return m_key; }
+		inline const TValue& value() const { return m_value; }
+	};
+
+	template<typename HT, typename HRT>
+	class hashtable_iterator
+	{
+	private:
+		HT* m_hashtable;
+		size_t m_index;
+
+	public:
+		hashtable_iterator(HT* hashtable, size_t index)
+		{
+			m_hashtable = hashtable;
+			m_index = index;
+		}
+
+		bool operator ==(const hashtable_iterator& other)
+		{
+			return !operator !=(other);
+		}
+
+		bool operator !=(const hashtable_iterator& other)
+		{
+			return m_hashtable != other.m_hashtable || m_index != other.m_index;
+		}
+
+		hashtable_iterator& operator ++()
+		{
+			m_index++;
+			return *this;
+		}
+
+		HRT& operator *()
+		{
+			return m_hashtable->m_entries[m_index];
+		}
+	};
+
 	template<typename TKey, typename TValue, typename THasher = default_hashers>
 	class hashtable
 	{
 	public:
-		struct entry
-		{
-			uint64_t hash;
-			TKey key;
-			TValue value;
-		};
+		typedef hashtable_entry<TKey, TValue, THasher> entry;
+		typedef hashtable_iterator<hashtable<TKey, TValue, THasher>, entry> iterator;
+		typedef hashtable_iterator<const hashtable<TKey, TValue, THasher>, const entry> constiterator;
 
-		class iterator
-		{
-		private:
-			typedef hashtable<TKey, TValue> hashtable_type;
-
-		private:
-			hashtable_type* m_hashtable;
-			size_t m_index;
-
-		public:
-			iterator(hashtable_type* hashtable, size_t index)
-			{
-				m_hashtable = hashtable;
-				m_index = index;
-			}
-
-			bool operator ==(const iterator& other)
-			{
-				return !operator !=(other);
-			}
-
-			bool operator !=(const iterator& other)
-			{
-				return m_hashtable != other.m_hashtable || m_index != other.m_index;
-			}
-
-			iterator& operator ++()
-			{
-				m_index++;
-				return *this;
-			}
-
-			entry& operator *()
-			{
-				return m_hashtable->m_entries[m_index];
-			}
-		};
+		friend class iterator;
+		friend class constiterator;
 
 	private:
 		entry* m_entries = nullptr;
@@ -142,9 +158,9 @@ namespace s2
 			ensure_memory(m_length + 1);
 			entry* ret = new (m_entries + m_length) entry;
 			m_length++;
-			ret->hash = THasher::hash(key);
-			ret->key = key;
-			return ret->value;
+			ret->hash() = THasher::hash(key);
+			ret->key() = key;
+			return ret->value();
 		}
 
 		TValue& add(const TKey& key)
@@ -156,9 +172,9 @@ namespace s2
 			size_t newIndex = m_length;
 
 			if (m_length > 0) {
-				if (keyhash < m_entries[0].hash) {
+				if (keyhash < m_entries[0].hash()) {
 					newIndex = 0;
-				} else if (keyhash > m_entries[m_length - 1].hash) {
+				} else if (keyhash > m_entries[m_length - 1].hash()) {
 					newIndex = m_length;
 				} else {
 					size_t start = 0;
@@ -172,19 +188,19 @@ namespace s2
 						}
 						auto& e = m_entries[halfIndex];
 
-						if (e.hash == keyhash) {
+						if (e.hash() == keyhash) {
 							throw hashtableexception::duplicate_key;
 						}
 
 						if (halfLen == 1) {
 							newIndex = halfIndex;
-							if (keyhash > e.hash) {
+							if (keyhash > e.hash()) {
 								newIndex++;
 							}
 							break;
-						} else if (keyhash > e.hash) {
+						} else if (keyhash > e.hash()) {
 							start = halfIndex;
-						} else if (keyhash < e.hash) {
+						} else if (keyhash < e.hash()) {
 							end = halfIndex;
 						}
 					}
@@ -197,17 +213,17 @@ namespace s2
 
 			m_length++;
 
-			if (newIndex > 0 && keyhash <= m_entries[newIndex - 1].hash) {
+			if (newIndex > 0 && keyhash <= m_entries[newIndex - 1].hash()) {
 				throw hashtableexception::unstable;
 			}
-			if (newIndex < m_length - 1 && keyhash >= m_entries[newIndex + 1].hash) {
+			if (newIndex < m_length - 1 && keyhash >= m_entries[newIndex + 1].hash()) {
 				throw hashtableexception::unstable;
 			}
 
 			entry* ret = new (m_entries + newIndex) entry;
-			ret->hash = keyhash;
-			ret->key = key;
-			return ret->value;
+			ret->hash() = keyhash;
+			ret->key() = key;
+			return ret->value();
 		}
 
 		void add(const TKey& key, const TValue& value, bool sort = true)
@@ -226,7 +242,7 @@ namespace s2
 				add(key) = value;
 				return;
 			}
-			m_entries[index].value = value;
+			m_entries[index].value() = value;
 		}
 
 		void remove(const TKey& key)
@@ -262,7 +278,7 @@ namespace s2
 				return false;
 			}
 
-			value = m_entries[index].value;
+			value = m_entries[index].value();
 			return true;
 		}
 
@@ -288,7 +304,7 @@ namespace s2
 			if (index == -1) {
 				return add(key);
 			}
-			return m_entries[index].value;
+			return m_entries[index].value();
 		}
 
 		const TValue& operator [](const TKey& key) const
@@ -297,7 +313,7 @@ namespace s2
 			if (index == -1) {
 				throw hashtableexception::no_such_key;
 			}
-			return m_entries[index].value;
+			return m_entries[index].value();
 		}
 
 		iterator begin()
@@ -305,9 +321,9 @@ namespace s2
 			return iterator(this, 0);
 		}
 
-		const iterator begin() const
+		const constiterator begin() const
 		{
-			return iterator(this, 0);
+			return constiterator(this, 0);
 		}
 
 		iterator end()
@@ -315,9 +331,9 @@ namespace s2
 			return iterator(this, m_length);
 		}
 
-		const iterator end() const
+		const constiterator end() const
 		{
-			return iterator(this, m_length);
+			return constiterator(this, m_length);
 		}
 
 		void sort()
@@ -325,9 +341,9 @@ namespace s2
 			qsort(m_entries, m_length, sizeof(entry), [](const void* pa, const void* pb) {
 				auto a = (entry*)pa;
 				auto b = (entry*)pb;
-				if (a->hash < b->hash) {
+				if (a->hash() < b->hash()) {
 					return -1;
-				} else if (a->hash > b->hash) {
+				} else if (a->hash() > b->hash()) {
 					return 1;
 				}
 				return 0;
@@ -368,13 +384,13 @@ namespace s2
 				}
 				auto& e = m_entries[halfIndex];
 
-				if (keyhash == e.hash) {
+				if (keyhash == e.hash()) {
 					return (int)halfIndex;
 				} else if (halfLen == 1) {
 					return -1;
-				} else if (keyhash > e.hash) {
+				} else if (keyhash > e.hash()) {
 					start = halfIndex;
-				} else if (keyhash < e.hash) {
+				} else if (keyhash < e.hash()) {
 					end = halfIndex;
 				}
 			}

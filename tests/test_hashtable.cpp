@@ -29,7 +29,7 @@ void test_hashtable()
 	S2_TEST(dict.len() == 2);
 
 	for (auto &pair : dict) {
-		pair.value = "FUBAR";
+		pair.value() = "FUBAR";
 	}
 	S2_TEST(dict["foo"] == "FUBAR");
 	S2_TEST(dict["bar"] == "FUBAR");
@@ -58,7 +58,7 @@ void test_hashtable()
 	dict_unsorted.add_unsorted(10);
 	dict_unsorted.add_unsorted(5);
 	S2_TEST(dict_unsorted.len() == 2);
-	S2_TEST(dict_unsorted.at(0).hash == 10);
+	S2_TEST(dict_unsorted.at(0).hash() == 10);
 	dict_unsorted.sort();
-	S2_TEST(dict_unsorted.at(0).hash == 5);
+	S2_TEST(dict_unsorted.at(0).hash() == 5);
 }
