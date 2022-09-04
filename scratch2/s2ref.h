@@ -35,6 +35,14 @@ namespace s2
 			addref();
 		}
 
+		ref(ref&& old)
+		{
+			m_ptr = old.m_ptr;
+			m_count = old.m_count;
+			old.m_ptr = nullptr;
+			old.m_count = nullptr;
+		}
+
 		~ref()
 		{
 			release();
