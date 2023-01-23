@@ -126,6 +126,8 @@ namespace s2
 		size_t len() const;
 		string operator[](size_t index) const;
 
+		const char* c_str(size_t index) const;
+
 	private:
 		void add(const char* sz, size_t len);
 	};
@@ -961,6 +963,11 @@ size_t s2::stringsplit::len() const
 }
 
 s2::string s2::stringsplit::operator[](size_t index) const
+{
+	return m_buffer[index];
+}
+
+const char* s2::stringsplit::c_str(size_t index) const
 {
 	return m_buffer[index];
 }
