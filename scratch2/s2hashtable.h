@@ -245,7 +245,8 @@ namespace s2
 			m_entries[index].value() = value;
 		}
 
-		void remove(const TKey& key)
+		template<typename TComparable = TKey>
+		void remove(const TComparable& key)
 		{
 			int index = index_of(key);
 			if (index == -1) {
@@ -266,12 +267,14 @@ namespace s2
 			m_length--;
 		}
 
-		bool contains(const TKey& key) const
+		template<typename TComparable = TKey>
+		bool contains(const TComparable& key) const
 		{
 			return index_of(key) != -1;
 		}
 
-		bool get(const TKey& key, TValue& value) const
+		template<typename TComparable = TKey>
+		bool get(const TComparable& key, TValue& value) const
 		{
 			int index = index_of(key);
 			if (index == -1) {
@@ -298,7 +301,8 @@ namespace s2
 			return m_entries[index];
 		}
 
-		TValue& operator [](const TKey& key)
+		template<typename TComparable = TKey>
+		TValue& operator [](const TComparable& key)
 		{
 			int index = index_of(key);
 			if (index == -1) {
@@ -307,7 +311,8 @@ namespace s2
 			return m_entries[index].value();
 		}
 
-		const TValue& operator [](const TKey& key) const
+		template<typename TComparable = TKey>
+		const TValue& operator [](const TComparable& key) const
 		{
 			int index = index_of(key);
 			if (index == -1) {
@@ -365,7 +370,8 @@ namespace s2
 			m_allocSize = count;
 		}
 
-		int index_of(const TKey& key) const
+		template<typename TComparable = TKey>
+		int index_of(const TComparable& key) const
 		{
 			if (m_length == 0) {
 				return -1;
