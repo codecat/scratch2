@@ -235,6 +235,7 @@ s2::string::string()
 {
 	m_length = 0;
 	m_buffer = nullptr;
+	m_allocSize = 0;
 }
 
 s2::string::string(const char* sz)
