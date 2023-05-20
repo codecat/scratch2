@@ -17,7 +17,6 @@ add_executable(s2tests
   scratch2/s2string.h
   scratch2/s2list.h
   scratch2/s2dict.h
-  scratch2/s2fastdict.h # Needs tests!
   scratch2/s2hashtable.h
   scratch2/s2file.h
   scratch2/s2ref.h
