@@ -16,7 +16,7 @@ namespace s2
 		unstable,
 	};
 
-	class default_hashers
+	class default_hashers_hashtable
 	{
 	public:
 		static uint64_t hash(const char* key);
@@ -86,7 +86,7 @@ namespace s2
 		}
 	};
 
-	template<typename TKey, typename TValue, typename THasher = default_hashers>
+	template<typename TKey, typename TValue, typename THasher = default_hashers_hashtable>
 	class hashtable
 	{
 	public:
@@ -408,7 +408,7 @@ namespace s2
 
 #ifdef S2_IMPL
 
-uint64_t s2::default_hashers::hash(const char* key)
+uint64_t s2::default_hashers_hashtable::hash(const char* key)
 {
 	// This is a modified MurmurHash64A by Austin Appleby
 
@@ -454,15 +454,15 @@ uint64_t s2::default_hashers::hash(const char* key)
 	return h;
 }
 
-uint64_t s2::default_hashers::hash(int8_t key) { return (uint64_t)key; }
-uint64_t s2::default_hashers::hash(int16_t key) { return (uint64_t)key; }
-uint64_t s2::default_hashers::hash(int32_t key) { return (uint64_t)key; }
-uint64_t s2::default_hashers::hash(int64_t key) { return (uint64_t)key; }
-uint64_t s2::default_hashers::hash(uint8_t key) { return (uint64_t)key; }
-uint64_t s2::default_hashers::hash(uint16_t key) { return (uint64_t)key; }
-uint64_t s2::default_hashers::hash(uint32_t key) { return (uint64_t)key; }
-uint64_t s2::default_hashers::hash(uint64_t key) { return key; }
-uint64_t s2::default_hashers::hash(float key) { return (uint64_t) * (uint32_t*)&key; }
-uint64_t s2::default_hashers::hash(double key) { return *(uint64_t*)&key; }
+uint64_t s2::default_hashers_hashtable::hash(int8_t key) { return (uint64_t)key; }
+uint64_t s2::default_hashers_hashtable::hash(int16_t key) { return (uint64_t)key; }
+uint64_t s2::default_hashers_hashtable::hash(int32_t key) { return (uint64_t)key; }
+uint64_t s2::default_hashers_hashtable::hash(int64_t key) { return (uint64_t)key; }
+uint64_t s2::default_hashers_hashtable::hash(uint8_t key) { return (uint64_t)key; }
+uint64_t s2::default_hashers_hashtable::hash(uint16_t key) { return (uint64_t)key; }
+uint64_t s2::default_hashers_hashtable::hash(uint32_t key) { return (uint64_t)key; }
+uint64_t s2::default_hashers_hashtable::hash(uint64_t key) { return key; }
+uint64_t s2::default_hashers_hashtable::hash(float key) { return (uint64_t) * (uint32_t*)&key; }
+uint64_t s2::default_hashers_hashtable::hash(double key) { return *(uint64_t*)&key; }
 
 #endif
