@@ -134,6 +134,7 @@ void test_string()
 	str = "this.is.a.test";
 	str = str.replace('.', ' ');
 	S2_TEST(str == "this is a test");
+	S2_TEST(str.replace("", "a") == "this is a test");
 	str = str.replace("a", "my");
 	S2_TEST(str == "this is my test");
 	str = "foo";

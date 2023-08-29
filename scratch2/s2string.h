@@ -529,6 +529,10 @@ s2::string s2::string::replace(const char* find, const char* replace) const
 		return *this;
 	}
 
+	if (*find == '\0') {
+		return *this;
+	}
+
 	size_t findlen = strlen(find);
 	size_t replacelen = strlen(replace);
 
