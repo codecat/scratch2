@@ -61,6 +61,7 @@ namespace s2
 
 		string replace(char find, char replace) const;
 		string replace(const char* find, const char* replace) const;
+		string replace(const char* findchars, char replace) const;
 
 		void setf(const char* format, ...);
 		void appendf(const char* format, ...);
@@ -549,6 +550,27 @@ s2::string s2::string::replace(const char* find, const char* replace) const
 		ret.insert(replace, index, replacelen);
 
 		index += (int)replacelen;
+	}
+	return ret;
+}
+
+s2::string s2::string::replace(const char* findchars, char replace) const
+{
+	if (m_buffer == nullptr || findchars == nullptr) {
+		return *this;
+	}
+
+	if (*findchars == '\0') {
+		return *this;
+	}
+
+	s2::string ret(*this);
+	char* p = ret.m_buffer;
+	while (*p != '\0') {
+		if (strchr(findchars, *p) != nullptr) {
+			*p = replace;
+		}
+		p++;
 	}
 	return ret;
 }

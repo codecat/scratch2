@@ -145,6 +145,8 @@ void test_string()
 	str = str.replace("foooo", "b");
 	S2_TEST(str == "b");
 	S2_TEST(str.len() == 1);
+	str = "a b-c";
+	S2_TEST(str.replace(" -", '_') == "a_b_c");
 
 	str = "12.3";
 	S2_TEST(str.as_int() == 12);
