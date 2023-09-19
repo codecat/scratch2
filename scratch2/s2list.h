@@ -176,11 +176,11 @@ namespace s2
 
 		void remove(size_t index)
 		{
-			if (index < 0 || index >= m_length) {
+			if (index >= m_length) {
 				return;
 			}
 			m_buffer[index].~T();
-			if (index < m_length) {
+			if (index < m_length - 1) {
 				//NOTE: This is not safe if there are pointers to the items
 				memmove(m_buffer + index, m_buffer + index + 1, (m_length - index) * sizeof(T));
 			}
