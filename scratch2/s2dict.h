@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <new>
+#include <initializer_list>
 
 #ifndef S2_DICT_ALLOC_STEP
 #define S2_DICT_ALLOC_STEP 16

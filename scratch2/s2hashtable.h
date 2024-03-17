@@ -94,8 +94,8 @@ namespace s2
 		typedef hashtable_iterator<hashtable<TKey, TValue, THasher>, entry> iterator;
 		typedef hashtable_iterator<const hashtable<TKey, TValue, THasher>, const entry> constiterator;
 
-		friend class iterator;
-		friend class constiterator;
+		friend iterator;
+		friend constiterator;
 
 	private:
 		entry* m_entries = nullptr;
