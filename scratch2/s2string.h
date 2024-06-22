@@ -177,6 +177,7 @@ namespace s2
 		}
 
 		inline operator const char* () const { return m_str; }
+		inline const char* c_str() const { return m_str; }
 		inline size_t len() const { return m_len; }
 
 		inline bool operator==(const char* str) const { return !strcmp(m_str, str); }
