@@ -262,7 +262,7 @@ s2::string::string(const char* sz, size_t start, size_t len)
 }
 
 s2::string::string(const s2::string &str)
-	: string(str.m_buffer)
+	: string(str.m_buffer, 0, str.m_length)
 {
 }
 
