@@ -846,6 +846,13 @@ void s2::string::ensure_memory(size_t size)
 	if (m_buffer != nullptr && m_allocSize >= size) {
 		return;
 	}
+
+	// Resize in chunks to avoid re-allocating too often
+	size_t resize = m_allocSize + m_allocSize / 2;
+	if (resize < SIZE_MAX && resize > size) {
+		size = resize;
+	}
+
 	resize_memory(size);
 }
 
