@@ -94,6 +94,22 @@ void test_string()
 	S2_TEST(parse4[0] == "");
 	S2_TEST(parse4[3] == "c");
 
+	s2::stringsplit parse5("", ".");
+	S2_TEST(parse5.len() == 1);
+
+	s2::stringsplit parse6(".", ".");
+	S2_TEST(parse6.len() == 2);
+
+	s2::stringsplit parse7("hello \"world, this is me!\" and you", true);
+	S2_TEST(parse7.len() == 4);
+	S2_TEST(parse7[0] == "hello");
+	S2_TEST(parse7[1] == "world, this is me!");
+	S2_TEST(parse7[2] == "and");
+	S2_TEST(parse7[3] == "you");
+
+	s2::stringsplit parse8("", true);
+	S2_TEST(parse8.len() == 0);
+
 	str = "   \t\t foo\tbar\n\n  \r\n";
 	S2_TEST(str.trim() == "foo\tbar");
 	str = "   \t\t foo\tbar";

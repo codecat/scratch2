@@ -893,6 +893,12 @@ s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
 		return;
 	}
 
+	// If the input string is empty, we will just have 1 empty string
+	if (*sz == 0) {
+		add("", 0);
+		return;
+	}
+
 	const char* p = sz;
 	size_t len = strlen(sz);
 	size_t lenDelim = strlen(delim);
@@ -921,7 +927,7 @@ s2::stringsplit::stringsplit(const char* sz, const char* delim, int limit)
 
 s2::stringsplit::stringsplit(const char* sz, bool commandLine)
 {
-	if (sz == nullptr) {
+	if (sz == nullptr || *sz == '\0') {
 		return;
 	}
 
