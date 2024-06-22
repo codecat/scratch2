@@ -172,4 +172,10 @@ void test_string()
 	S2_TEST(str.as_float() == 12.3f);
 	S2_TEST(str.as_double() == 12.3);
 	S2_TEST(str.as_bool() == true);
+
+	s2::string strEmptySource;
+	s2::string strEmpty2(strEmptySource);
+	S2_TEST(strEmpty2.allocsize() == 0);
+	strEmpty2.append("test");
+	S2_TEST(strEmpty2 == "test");
 }

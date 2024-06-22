@@ -251,14 +251,15 @@ s2::string::string(const char* sz, size_t len)
 }
 
 s2::string::string(const char* sz, size_t start, size_t len)
+	: string()
 {
-	m_length = len;
-	m_buffer = nullptr;
-	if (sz != nullptr) {
-		resize_memory(len + 1);
-		memcpy(m_buffer + start, sz, len);
-		m_buffer[len] = '\0';
+	if (sz == nullptr) {
+		return;
 	}
+	m_length = len;
+	resize_memory(len + 1);
+	memcpy(m_buffer + start, sz, len);
+	m_buffer[len] = '\0';
 }
 
 s2::string::string(const s2::string &str)
