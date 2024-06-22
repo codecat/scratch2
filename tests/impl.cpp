@@ -1,6 +1,7 @@
 #define S2_IMPL
 
 #include <s2string.h>
+#include <s2stringpath.h>
 #include <s2list.h>
 #include <s2dict.h>
 #include <s2hashtable.h>

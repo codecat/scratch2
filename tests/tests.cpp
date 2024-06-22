@@ -1,6 +1,7 @@
 #include <s2test.h>
 
 extern void test_string();
+extern void test_stringpath();
 extern void test_list();
 extern void test_dict();
 extern void test_hashtable();
@@ -14,6 +15,7 @@ int main()
 	s2::test_begin();
 
 	test_string();
+	test_stringpath();
 	test_list();
 	test_dict();
 	test_hashtable();

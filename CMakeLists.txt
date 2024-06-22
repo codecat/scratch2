@@ -15,6 +15,7 @@ endif()
 add_executable(s2tests
   scratch2/s2test.h
   scratch2/s2string.h
+  scratch2/s2stringpath.h
   scratch2/s2list.h
   scratch2/s2dict.h
   scratch2/s2hashtable.h
@@ -27,6 +28,7 @@ add_executable(s2tests
 	tests/impl.cpp
 	tests/structs.cpp
 	tests/test_string.cpp
+	tests/test_stringpath.cpp
 	tests/test_list.cpp
 	tests/test_dict.cpp
 	tests/test_hashtable.cpp
