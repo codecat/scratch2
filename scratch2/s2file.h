@@ -3,6 +3,7 @@
 #define S2_USING_FILE
 
 #include <cstddef>
+#include <cstring>
 
 namespace s2
 {
@@ -66,6 +67,11 @@ namespace s2
 		void writeline();
 		void writeline(const char* str);
 
+		inline void writechar(char c) { write(&c, 1); }
+		inline void writestring(const char* str) { write(str, strlen(str)); }
+		inline void writestring(const char* str, int len) { write(str, len); }
+		void writeformat(const char* format, ...);
+
 		template<typename T>
 		void read(T &o)
 		{
@@ -99,7 +105,7 @@ namespace s2
 
 #include <cstdio>
 #include <cstdlib>
-#include <cstring>
+#include <cstdarg>
 
 #if defined(_MSC_VER)
 #ifndef WIN32_LEAN_AND_MEAN
@@ -388,6 +394,14 @@ void s2::file::writeline(const char* str)
 		fwrite(str, len, 1, (FILE*)m_fh);
 	}
 	writeline();
+}
+
+void s2::file::writeformat(const char* format, ...)
+{
+	va_list vl;
+	va_start(vl, format);
+	vfprintf((FILE*)m_fh, format, vl);
+	va_end(vl);
 }
 
 bool s2::file_exists(const char* filename)
