@@ -229,6 +229,8 @@ namespace s2
 			qsort(m_buffer, m_length, sizeof(T), f);
 		}
 
+		inline const T* data() { return m_buffer; }
+
 		T &operator [](size_t index)
 		{
 			return m_buffer[index];
