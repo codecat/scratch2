@@ -224,6 +224,26 @@ namespace s2
 			return indexof(o) != -1;
 		}
 
+		bool any(bool (*f)(T&))
+		{
+			for (size_t i = 0; i < m_length; i++) {
+				if (f(m_buffer[i])) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		bool any(bool (*f)(const T&)) const
+		{
+			for (size_t i = 0; i < m_length; i++) {
+				if (f(m_buffer[i])) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		void sort(int (*f)(const void *, const void *))
 		{
 			qsort(m_buffer, m_length, sizeof(T), f);
