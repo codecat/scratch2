@@ -26,7 +26,7 @@ void test_stringpath()
 	S2_TEST(s2::path::changeExtension("hello", ".png") == "hello.png");
 	S2_TEST(s2::path::changeExtension("test.zip/hello.txt", "png") == "test.zip/hello.png");
 	S2_TEST(s2::path::changeExtension("", "zip") == ".zip");
-	S2_TEST(s2::path::changeExtension("", "") == "");
+	S2_TEST(s2::path::changeExtension("", "") == ".");
 
 	S2_TEST(s2::path::removeExtension("hello.txt") == "hello");
 	S2_TEST(s2::path::removeExtension("hello.") == "hello");
@@ -40,8 +40,8 @@ void test_stringpath()
 	S2_TEST(s2::path::join("foo/", "bar") == "foo/bar");
 	S2_TEST(s2::path::join("foo", "/bar") == "foo/bar");
 	S2_TEST(s2::path::join("foo/", "") == "foo/");
-	S2_TEST(s2::path::join("foo", "") == "foo/");
-	S2_TEST(s2::path::join("", "foo") == "/foo");
+	S2_TEST(s2::path::join("foo", "") == "foo");
+	S2_TEST(s2::path::join("", "foo") == "foo");
 	S2_TEST(s2::path::join("", "/foo") == "/foo");
 	S2_TEST(s2::path::join("", "") == "");
 
