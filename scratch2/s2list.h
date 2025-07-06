@@ -182,7 +182,7 @@ namespace s2
 			m_buffer[index].~T();
 			if (index < m_length - 1) {
 				//NOTE: This is not safe if there are pointers to the items
-				memmove(m_buffer + index, m_buffer + index + 1, (m_length - index) * sizeof(T));
+				memmove(m_buffer + index, m_buffer + index + 1, (m_length - index - 1) * sizeof(T));
 			}
 			m_length--;
 		}
