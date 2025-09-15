@@ -10,6 +10,17 @@ void test_file()
 {
 	s2::test_group("file");
 
+	s2::file not_exist("404.bin");
+	try {
+		not_exist.open(s2::filemode::read);
+		S2_TEST(false /* we shouldn't get here */);
+	} catch (s2::fileexception& ex) {
+		int errcode = ex.posix_error();
+		S2_TEST(errcode == ENOENT);
+		const char* err = ex.posix_error_string();
+		S2_TEST(!strcmp(err, "No such file or directory"));
+	}
+
 	s2::file file("test.bin");
 
 	file.open(s2::filemode::write);

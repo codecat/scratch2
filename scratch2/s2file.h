@@ -7,6 +7,33 @@
 
 namespace s2
 {
+	class fileexception
+	{
+	private:
+		int m_errno;
+		char m_errstr[255] = { 0 };
+
+	public:
+		inline fileexception(int err) { m_errno = err; }
+
+		inline int posix_error() const { return m_errno; }
+		inline void posix_error_string(char* buffer, size_t maxlen) const
+		{
+#if defined(_MSC_VER)
+			strerror_s(buffer, maxlen, m_errno);
+#else
+			strerror_r(m_errno, buffer, buflen);
+#endif
+		}
+		inline const char* posix_error_string()
+		{
+			if (m_errstr[0] == '\0') {
+				posix_error_string(m_errstr, sizeof(m_errstr));
+			}
+			return m_errstr;
+		}
+	};
+
 	enum class filemode
 	{
 		none,
@@ -214,13 +241,14 @@ void s2::file::open(s2::filemode mode)
 #endif
 
 #if defined(_MSC_VER)
-	m_fh = _wfopen(ToWide(m_filename), openmode);
+	int err = _wfopen_s((FILE**)&m_fh, ToWide(m_filename), openmode);
 #else
 	m_fh = fopen(m_filename, openmode);
+	int err = errno;
 #endif
 	if (m_fh == nullptr) {
 		m_mode = s2::filemode::none;
-		return;
+		throw s2::fileexception(err);
 	}
 
 	m_mode = mode;
