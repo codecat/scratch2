@@ -100,7 +100,9 @@ namespace s2
 		char &operator [](int index);
 		const char &operator [](int index) const;
 
+		void set_length_unsafe(size_t len);
 		void ensure_memory(size_t size);
+		void ensure_not_null();
 
 	private:
 		void resize_memory(size_t size);
@@ -842,6 +844,11 @@ const char &s2::string::operator [](int index) const
 	return m_buffer[index];
 }
 
+void s2::string::set_length_unsafe(size_t len)
+{
+	m_length = len;
+}
+
 void s2::string::ensure_memory(size_t size)
 {
 	if (m_buffer != nullptr && m_allocSize >= size) {
@@ -855,6 +862,14 @@ void s2::string::ensure_memory(size_t size)
 	}
 
 	resize_memory(size);
+}
+
+void s2::string::ensure_not_null()
+{
+	if (m_buffer == nullptr) {
+		ensure_memory(1);
+		m_buffer[0] = '\0';
+	}
 }
 
 void s2::string::resize_memory(size_t size)
