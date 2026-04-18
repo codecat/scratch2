@@ -26,7 +26,7 @@ namespace s2
 		string(const char* sz);
 		string(const char* sz, size_t len);
 		string(const char* sz, size_t start, size_t len);
-		string(const string &str);
+		string(const string& str);
 		~string();
 
 		size_t len() const;
@@ -66,14 +66,14 @@ namespace s2
 		void setf(const char* format, ...);
 		void appendf(const char* format, ...);
 
-		string &operator =(const char* sz);
-		string &operator =(const string &str);
+		string& operator =(const char* sz);
+		string& operator =(const string& str);
 
-		string &operator +=(const char* sz);
-		string &operator +=(const string &str);
+		string& operator +=(const char* sz);
+		string& operator +=(const string& str);
 
 		string operator +(const char* sz) const;
-		string operator +(const string &str) const;
+		string operator +(const string& str) const;
 
 		string trim() const;
 		string trim(const char* sz) const;
@@ -90,10 +90,10 @@ namespace s2
 		bool as_bool() const;
 
 		bool operator ==(const char* sz) const;
-		bool operator ==(const string &str) const;
+		bool operator ==(const string& str) const;
 
 		bool operator !=(const char* sz) const;
-		bool operator !=(const string &str) const;
+		bool operator !=(const string& str) const;
 
 		operator const char*() const;
 
@@ -106,9 +106,9 @@ namespace s2
 		void resize_memory(size_t size);
 	};
 
-	bool operator ==(const char* sz, const string &str);
+	bool operator ==(const char* sz, const string& str);
 
-	string operator +(const char* lhs, const string &rhs);
+	string operator +(const char* lhs, const string& rhs);
 
 	string strprintf(const char* format, ...);
 
@@ -262,7 +262,7 @@ s2::string::string(const char* sz, size_t start, size_t len)
 	m_buffer[len] = '\0';
 }
 
-s2::string::string(const s2::string &str)
+s2::string::string(const s2::string& str)
 	: string(str.m_buffer, 0, str.m_length)
 {
 }
@@ -621,7 +621,7 @@ void s2::string::appendf(const char* format, ...)
 	free(buffer);
 }
 
-s2::string &s2::string::operator =(const char* sz)
+s2::string& s2::string::operator =(const char* sz)
 {
 	if (sz == nullptr) {
 		if (m_buffer != nullptr) {
@@ -643,18 +643,18 @@ s2::string &s2::string::operator =(const char* sz)
 	return *this;
 }
 
-s2::string &s2::string::operator =(const s2::string &str)
+s2::string& s2::string::operator =(const s2::string& str)
 {
 	return operator =(str.m_buffer);
 }
 
-s2::string &s2::string::operator +=(const char* sz)
+s2::string& s2::string::operator +=(const char* sz)
 {
 	append(sz);
 	return *this;
 }
 
-s2::string &s2::string::operator +=(const s2::string &str)
+s2::string& s2::string::operator +=(const s2::string& str)
 {
 	return operator +=(str.m_buffer);
 }
@@ -664,7 +664,7 @@ s2::string s2::string::operator +(const char* sz) const
 	return string(*this) += sz;
 }
 
-s2::string s2::string::operator +(const string &str) const
+s2::string s2::string::operator +(const string& str) const
 {
 	return string(*this) += str;
 }
@@ -801,7 +801,7 @@ bool s2::string::operator ==(const char* sz) const
 	return !strcmp(m_buffer, sz);
 }
 
-bool s2::string::operator ==(const s2::string &str) const
+bool s2::string::operator ==(const s2::string& str) const
 {
 	return (*this == str.m_buffer);
 }
@@ -811,7 +811,7 @@ bool s2::string::operator !=(const char* sz) const
 	return !(*this == sz);
 }
 
-bool s2::string::operator !=(const string &str) const
+bool s2::string::operator !=(const string& str) const
 {
 	return !(*this == str);
 }
@@ -863,12 +863,12 @@ void s2::string::resize_memory(size_t size)
 	m_buffer = (char*)realloc(m_buffer, m_allocSize);
 }
 
-bool s2::operator ==(const char* sz, const string &str)
+bool s2::operator ==(const char* sz, const string& str)
 {
 	return str == sz;
 }
 
-s2::string s2::operator +(const char* lhs, const string &rhs)
+s2::string s2::operator +(const char* lhs, const string& rhs)
 {
 	return string(lhs) += rhs;
 }
