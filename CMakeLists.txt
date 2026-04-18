@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.31)
 
 project(s2)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 include_directories(
 	scratch2
