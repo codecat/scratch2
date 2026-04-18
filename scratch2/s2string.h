@@ -142,45 +142,40 @@ namespace s2
 		size_t m_len;
 
 	public:
-		inline stringview()
+		constexpr inline stringview()
+			: m_str(""), m_len(0)
 		{
-			m_str = "";
-			m_len = 0;
 		}
 
-		inline stringview(const char* str)
+		constexpr inline stringview(const char* str)
+			: m_str(str), m_len(__builtin_strlen(str))
 		{
-			m_str = str;
-			m_len = strlen(str);
 		}
 
-		inline stringview(const char* str, size_t len)
+		constexpr inline stringview(const char* str, size_t len)
+			: m_str(str), m_len(len)
 		{
-			m_str = str;
-			m_len = len;
 		}
 
 		inline stringview(const string& str)
+			: m_str(str.c_str()), m_len(str.len())
 		{
-			m_str = str.c_str();
-			m_len = str.len();
 		}
 
-		inline stringview(const stringview& other)
+		constexpr inline stringview(const stringview& other)
+			: m_str(other.m_str), m_len(other.m_len)
 		{
-			m_str = other.m_str;
-			m_len = other.m_len;
 		}
 
-		inline void operator=(const stringview& other)
+		constexpr inline void operator=(const stringview& other)
 		{
 			m_str = other.m_str;
 			m_len = other.m_len;
 		}
 
-		inline operator const char* () const { return m_str; }
-		inline const char* c_str() const { return m_str; }
-		inline size_t len() const { return m_len; }
+		constexpr inline operator const char* () const { return m_str; }
+		constexpr inline const char* c_str() const { return m_str; }
+		constexpr inline size_t len() const { return m_len; }
 
 		inline bool operator==(const char* str) const { return !strcmp(m_str, str); }
 		inline bool operator!=(const char* str) const { return !!strcmp(m_str, str); }
