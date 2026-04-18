@@ -9,6 +9,7 @@ extern void test_set();
 extern void test_file();
 extern void test_ref();
 extern void test_func();
+extern void test_cirbuf();
 
 int main()
 {
@@ -23,6 +24,7 @@ int main()
 	test_file();
 	test_ref();
 	test_func();
+	test_cirbuf();
 
 	s2::test_end();
 

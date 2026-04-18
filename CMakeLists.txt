@@ -23,6 +23,7 @@ add_executable(s2tests
   scratch2/s2file.h
   scratch2/s2ref.h
   scratch2/s2func.h
+  scratch2/s2cirbuf.h
 
 	tests/tests.cpp
 	tests/impl.cpp
@@ -36,4 +37,5 @@ add_executable(s2tests
 	tests/test_file.cpp
 	tests/test_ref.cpp
 	tests/test_func.cpp
+	tests/test_cirbuf.cpp
 )
