@@ -13,17 +13,17 @@ if (MSVC)
 endif()
 
 add_executable(s2tests
-  scratch2/s2test.h
-  scratch2/s2string.h
-  scratch2/s2stringpath.h
-  scratch2/s2list.h
-  scratch2/s2dict.h
-  scratch2/s2hashtable.h
-  scratch2/s2set.h
-  scratch2/s2file.h
-  scratch2/s2ref.h
-  scratch2/s2func.h
-  scratch2/s2cirbuf.h
+	scratch2/s2test.h
+	scratch2/s2string.h
+	scratch2/s2stringpath.h
+	scratch2/s2list.h
+	scratch2/s2dict.h
+	scratch2/s2hashtable.h
+	scratch2/s2set.h
+	scratch2/s2file.h
+	scratch2/s2ref.h
+	scratch2/s2func.h
+	scratch2/s2cirbuf.h
 
 	tests/tests.cpp
 	tests/impl.cpp
