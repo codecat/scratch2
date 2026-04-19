@@ -173,6 +173,7 @@ namespace s2
 			m_len = other.m_len;
 		}
 
+		inline operator string() const { return m_str; }
 		constexpr inline operator const char* () const { return m_str; }
 		constexpr inline const char* c_str() const { return m_str; }
 		constexpr inline size_t len() const { return m_len; }
